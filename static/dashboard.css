@@ -6,9 +6,10 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: radial-gradient(circle at top, #22335f, #0d1324 62%);
-    color: #e7eefc;
+    background: radial-gradient(circle at top, #0c0f1a, #030407 70%, #060913);
+    color: #ffffff;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
 }
 
 .container {
@@ -18,41 +19,49 @@ body {
 }
 
 .card {
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(16px);
-    border-radius: 22px;
-    padding: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+    background: rgba(18, 24, 43, 0.45);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 28px;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .btn {
     display: inline-block;
     margin-top: 15px;
-    padding: 10px 18px;
+    padding: 12px 24px;
     border-radius: 999px;
-    background: linear-gradient(135deg, #3ddc97, #1fb6ff);
-    color: #09111d;
+    background: linear-gradient(135deg, #1e9dbf 0%, #17789f 100%);
+    color: #030407;
     text-decoration: none;
     border: none;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: 0.2s ease;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .btn:hover {
-    transform: translateY(-1px);
+    transform: translateY(-3px) scale(1.02);
+    background: linear-gradient(135deg, #17789f 0%, #1e9dbf 100%);
+    box-shadow: 0 8px 30px rgba(30, 157, 191, 0.35);
 }
 
 .glass,
 .section {
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(16px);
-    border-radius: 22px;
-    padding: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+    background: rgba(18, 24, 43, 0.45);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 28px;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .section {
@@ -99,7 +108,8 @@ body {
     font-size: 2rem;
     font-weight: 800;
     letter-spacing: 0.08em;
-    color: #72f2b7;
+    color: #1e9dbf;
+    text-shadow: 0 0 16px rgba(30, 157, 191, 0.4);
 }
 
 .student-list {
@@ -200,13 +210,14 @@ p {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .leaderboard-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
-    border-color: rgba(255, 255, 255, 0.14);
+    transform: translateX(6px) translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border-color: #1e9dbf;
+    background: rgba(255, 255, 255, 0.09);
 }
 
 .leaderboard-rank-wrap {
