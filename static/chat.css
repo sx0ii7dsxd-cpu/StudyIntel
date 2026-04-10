@@ -125,3 +125,33 @@ body {
     color: #e7eefc;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* --- THEME: CYBER GLITCH OVERRIDES --- */
+html[data-theme='cyber'] .message.me .bubble {
+    background: linear-gradient(135deg, #fcee0a 0%, #f39c12 100%);
+    color: #000;
+}
+
+html[data-theme='cyber'] .chat-input button {
+    background: linear-gradient(135deg, #fcee0a 0%, #f39c12 100%);
+    color: #000;
+}
+
+html[data-theme='cyber'] .chat-input button:hover {
+    background: linear-gradient(135deg, #f39c12 0%, #fcee0a 100%);
+    box-shadow: 0 8px 30px rgba(252, 238, 10, 0.35);
+}
+
+/* --- THEME: SUNSET ECLIPSE OVERRIDES --- */
+html[data-theme='eclipse'] .message.me .bubble {
+    background: linear-gradient(135deg, #ff3366 0%, #ff9933 100%);
+}
+
+html[data-theme='eclipse'] .chat-input button {
+    background: linear-gradient(135deg, #ff3366 0%, #ff9933 100%);
+}
+
+html[data-theme='eclipse'] .chat-input button:hover {
+    background: linear-gradient(135deg, #ff9933 0%, #ff3366 100%);
+    box-shadow: 0 8px 30px rgba(255, 51, 102, 0.35);
+}

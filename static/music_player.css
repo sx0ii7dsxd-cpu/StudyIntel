@@ -217,3 +217,90 @@ body {
   font-weight: 700;
   text-shadow: 0 0 16px rgba(30, 157, 191, 0.4);
 }
+
+/* --- THEME: CYBER GLITCH --- */
+html[data-theme='cyber'] body {
+  background: 
+    radial-gradient(circle at top right, rgba(252, 238, 10, 0.12), transparent 45%), 
+    radial-gradient(circle at bottom left, rgba(255, 0, 60, 0.08), transparent 45%), 
+    radial-gradient(circle at center, #111111, #000000 80%);
+}
+
+html[data-theme='cyber'] .player-shell {
+  background: linear-gradient(180deg, rgba(252, 238, 10, 0.06), rgba(15, 15, 15, 0.85));
+  box-shadow: 0 35px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(252, 238, 10, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme='cyber'] .cover-art {
+  background: linear-gradient(135deg, #ff003c 0%, #fcee0a 100%);
+  box-shadow: 0 8px 24px rgba(252, 238, 10, 0.25);
+}
+
+html[data-theme='cyber'] .play-circle-btn {
+  background: linear-gradient(135deg, #fcee0a 0%, #f39c12 100%);
+  box-shadow: 0 4px 12px rgba(252, 238, 10, 0.2);
+}
+
+html[data-theme='cyber'] .play-circle-btn svg {
+  stroke: #000;
+  fill: #000;
+}
+
+html[data-theme='cyber'] .play-circle-btn:hover {
+  background: linear-gradient(135deg, #f39c12 0%, #fcee0a 100%);
+  box-shadow: 0 6px 16px rgba(252, 238, 10, 0.3);
+}
+
+html[data-theme='cyber'] .icon-btn.active {
+  color: #fcee0a;
+}
+
+html[data-theme='cyber'] .range-slider:hover {
+  background: #fcee0a;
+}
+
+html[data-theme='cyber'] .playlist-item.active {
+  color: #fcee0a;
+  text-shadow: 0 0 16px rgba(252, 238, 10, 0.4);
+}
+
+/* --- THEME: SUNSET ECLIPSE --- */
+html[data-theme='eclipse'] body {
+  background: 
+    radial-gradient(circle at top right, rgba(255, 51, 102, 0.2), transparent 45%), 
+    radial-gradient(circle at bottom left, rgba(191, 85, 236, 0.1), transparent 45%), 
+    radial-gradient(circle at center, #100b16, #050308 80%);
+}
+
+html[data-theme='eclipse'] .player-shell {
+  background: linear-gradient(180deg, rgba(255, 51, 102, 0.1), rgba(22, 14, 30, 0.65));
+  box-shadow: 0 35px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 51, 102, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme='eclipse'] .cover-art {
+  background: linear-gradient(135deg, #bf55ec 0%, #ff3366 100%);
+  box-shadow: 0 8px 24px rgba(255, 51, 102, 0.25);
+}
+
+html[data-theme='eclipse'] .play-circle-btn {
+  background: linear-gradient(135deg, #ff3366 0%, #ff9933 100%);
+  box-shadow: 0 4px 12px rgba(255, 51, 102, 0.2);
+}
+
+html[data-theme='eclipse'] .play-circle-btn:hover {
+  background: linear-gradient(135deg, #ff9933 0%, #ff3366 100%);
+  box-shadow: 0 6px 16px rgba(255, 51, 102, 0.3);
+}
+
+html[data-theme='eclipse'] .icon-btn.active {
+  color: #ff3366;
+}
+
+html[data-theme='eclipse'] .range-slider:hover {
+  background: #ff3366;
+}
+
+html[data-theme='eclipse'] .playlist-item.active {
+  color: #ff3366;
+  text-shadow: 0 0 16px rgba(255, 51, 102, 0.4);
+}

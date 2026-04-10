@@ -317,3 +317,50 @@ p {
         justify-content: flex-start;
     }
 }
+
+/* --- THEME: CYBER GLITCH OVERRIDES --- */
+html[data-theme='cyber'] body {
+    background: radial-gradient(circle at top, #111111, #000000 70%, #050505);
+}
+
+html[data-theme='cyber'] .btn {
+    background: linear-gradient(135deg, #fcee0a 0%, #f39c12 100%);
+    color: #000;
+}
+
+html[data-theme='cyber'] .btn:hover {
+    background: linear-gradient(135deg, #f39c12 0%, #fcee0a 100%);
+    box-shadow: 0 8px 30px rgba(252, 238, 10, 0.35);
+}
+
+html[data-theme='cyber'] .teacher-class-code {
+    color: #fcee0a;
+    text-shadow: 0 0 16px rgba(252, 238, 10, 0.4);
+}
+
+html[data-theme='cyber'] .leaderboard-card:hover {
+    border-color: #fcee0a;
+}
+
+/* --- THEME: SUNSET ECLIPSE OVERRIDES --- */
+html[data-theme='eclipse'] body {
+    background: radial-gradient(circle at top, #100b16, #050308 70%, #08050b);
+}
+
+html[data-theme='eclipse'] .btn {
+    background: linear-gradient(135deg, #ff3366 0%, #ff9933 100%);
+}
+
+html[data-theme='eclipse'] .btn:hover {
+    background: linear-gradient(135deg, #ff9933 0%, #ff3366 100%);
+    box-shadow: 0 8px 30px rgba(255, 51, 102, 0.35);
+}
+
+html[data-theme='eclipse'] .teacher-class-code {
+    color: #ff3366;
+    text-shadow: 0 0 16px rgba(255, 51, 102, 0.4);
+}
+
+html[data-theme='eclipse'] .leaderboard-card:hover {
+    border-color: #ff3366;
+}

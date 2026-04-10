@@ -6,9 +6,48 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='music_player.css') }}"
     />
+    <script>
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('studyintelTheme', theme);
+      }
+      function openThemeModal() {
+        if(document.getElementById('si-theme-modal')) {
+             document.getElementById('si-theme-modal').style.display = 'flex';
+             return;
+        }
+        const modalHtml = `
+          <div id="si-theme-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); z-index:9999; display:flex; align-items:center; justify-content:center;">
+             <div style="background:rgba(20, 20, 25, 0.95); padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 30px 60px rgba(0,0,0,0.8); min-width:300px; text-align:center;">
+                <h3 style="margin-top:0; color:#fff; font-size:1.4rem; font-weight:800;">Select Theme</h3>
+                <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
+                   <button onclick="applyThemeAndClose('ocean')" style="padding:16px; border-radius:12px; border:1px solid #1e9dbf; background:linear-gradient(135deg, rgba(30,157,191,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">🌊 Ocean Neon</button>
+                   <button onclick="applyThemeAndClose('cyber')" style="padding:16px; border-radius:12px; border:1px solid #fcee0a; background:linear-gradient(135deg, rgba(252,238,10,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">⚡ Cyber Glitch</button>
+                   <button onclick="applyThemeAndClose('eclipse')" style="padding:16px; border-radius:12px; border:1px solid #ff3366; background:linear-gradient(135deg, rgba(255,51,102,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">🌇 Sunset Eclipse</button>
+                </div>
+                <button onclick="document.getElementById('si-theme-modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; border-radius:12px; border:none; background:rgba(255,255,255,0.1); color:#ccc; cursor:pointer; font-weight:bold;">Cancel</button>
+             </div>
+          </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+      }
+      function applyThemeAndClose(theme) {
+         applyTheme(theme);
+         document.getElementById('si-theme-modal').style.display = 'none';
+      }
+      const savedTheme = localStorage.getItem('studyintelTheme') || 'ocean';
+      applyTheme(savedTheme);
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'studyintelTheme') {
+          document.documentElement.setAttribute('data-theme', e.newValue);
+        }
+      });
+    </script>
   </head>
   <body>
-    <div class="player-shell">
+    <div class="player-shell" style="position: relative;">
+      <button onclick="openThemeModal()" class="btn btn-sm btn-secondary" style="position: absolute; top: 20px; right: 28px; background: rgba(255,255,255,0.1); border:none; border-radius:12px; color:#fff; padding:6px 12px; font-size:12px; cursor:pointer;" aria-label="Toggle Theme">🎨 Theme</button>
       <div class="spotify-header">
         <div class="cover-art">
           <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>

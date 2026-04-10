@@ -510,6 +510,7 @@ select:focus,
   letter-spacing: -0.03em;
   background: linear-gradient(135deg, #ffffff 30%, #5C6E8A 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
@@ -1239,4 +1240,68 @@ select:focus,
     width: 140px;
     padding: 12px;
   }
+}
+
+/* --- THEME: CYBER GLITCH --- */
+html[data-theme='cyber'] {
+    --si-bg-top: #111111;
+    --si-bg-bottom: #000000;
+    --si-bg-core: #050505;
+    --si-panel: rgba(20, 20, 20, 0.85);
+    --si-panel-soft: rgba(30, 30, 30, 0.80);
+    --si-border: rgba(252, 238, 10, 0.12);
+    --si-border-strong: rgba(252, 238, 10, 0.25);
+    --si-text: #ffffff;
+    --si-text-muted: rgba(255, 255, 255, 0.65);
+    --si-text-soft: rgba(255, 255, 255, 0.45);
+    --si-accent: linear-gradient(135deg, #fcee0a 0%, #f39c12 100%);
+    --si-accent-hover: linear-gradient(135deg, #f39c12 0%, #fcee0a 100%);
+    --si-accent-solid: #fcee0a;
+    --si-accent-cool: #ff003c;
+    --si-shadow-glow: 0 8px 30px rgba(252, 238, 10, 0.25);
+}
+
+html[data-theme='cyber'] body::before {
+    background:
+        radial-gradient(circle at 12% 18%, rgba(252, 238, 10, 0.08), transparent 24%),
+        radial-gradient(circle at 88% 12%, rgba(255, 0, 60, 0.06), transparent 26%),
+        radial-gradient(circle at 50% 80%, rgba(252, 238, 10, 0.05), transparent 20%);
+}
+
+html[data-theme='cyber'] body::after {
+    background:
+        radial-gradient(circle at 30% 90%, rgba(255, 0, 60, 0.06), transparent 20%),
+        radial-gradient(circle at 80% 50%, rgba(252, 238, 10, 0.06), transparent 20%);
+}
+
+/* --- THEME: SUNSET ECLIPSE --- */
+html[data-theme='eclipse'] {
+    --si-bg-top: #100b16;
+    --si-bg-bottom: #050308;
+    --si-bg-core: #08050b;
+    --si-panel: rgba(22, 14, 30, 0.85);
+    --si-panel-soft: rgba(30, 20, 40, 0.80);
+    --si-border: rgba(255, 51, 102, 0.12);
+    --si-border-strong: rgba(255, 51, 102, 0.20);
+    --si-text: #fff0f5;
+    --si-text-muted: rgba(255, 240, 245, 0.74);
+    --si-text-soft: rgba(255, 240, 245, 0.58);
+    --si-accent: linear-gradient(135deg, #ff3366 0%, #ff9933 100%);
+    --si-accent-hover: linear-gradient(135deg, #ff9933 0%, #ff3366 100%);
+    --si-accent-solid: #ff3366;
+    --si-accent-cool: #bf55ec;
+    --si-shadow-glow: 0 8px 30px rgba(255, 51, 102, 0.25);
+}
+
+html[data-theme='eclipse'] body::before {
+    background:
+        radial-gradient(circle at 12% 18%, rgba(255, 51, 102, 0.12), transparent 24%),
+        radial-gradient(circle at 88% 12%, rgba(191, 85, 236, 0.12), transparent 26%),
+        radial-gradient(circle at 50% 80%, rgba(255, 51, 102, 0.08), transparent 20%);
+}
+
+html[data-theme='eclipse'] body::after {
+    background:
+        radial-gradient(circle at 30% 90%, rgba(191, 85, 236, 0.12), transparent 20%),
+        radial-gradient(circle at 80% 50%, rgba(255, 153, 51, 0.1), transparent 20%);
 }
