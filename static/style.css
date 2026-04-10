@@ -33,12 +33,34 @@ body {
 body::before {
     content: "";
     position: fixed;
-    inset: 0;
+    top: -50vh;
+    left: 0;
+    right: 0;
+    bottom: -50vh;
     pointer-events: none;
     background:
         radial-gradient(circle at 12% 18%, rgba(61, 220, 151, 0.12), transparent 24%),
-        radial-gradient(circle at 88% 12%, rgba(31, 182, 255, 0.16), transparent 26%);
+        radial-gradient(circle at 88% 12%, rgba(31, 182, 255, 0.16), transparent 26%),
+        radial-gradient(circle at 50% 80%, rgba(31, 182, 255, 0.08), transparent 20%);
+    transform: translateY(calc(var(--scroll-y, 0px) * -0.3));
+    will-change: transform;
     z-index: -1;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    top: -50vh;
+    left: 0;
+    right: 0;
+    bottom: -50vh;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 30% 90%, rgba(31, 182, 255, 0.15), transparent 20%),
+        radial-gradient(circle at 80% 50%, rgba(61, 220, 151, 0.1), transparent 20%);
+    transform: translateY(calc(var(--scroll-y, 0px) * -0.15));
+    will-change: transform;
+    z-index: -2;
 }
 
 ::selection {
@@ -171,6 +193,23 @@ button:focus-visible,
     width: min(520px, 100%);
 }
 
+@keyframes floatBlob1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+@keyframes floatBlob2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-40px, 30px) scale(1.1); }
+  66% { transform: translate(20px, -20px) scale(0.9); }
+}
+
+@keyframes authCardEnter {
+  0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .auth-shell {
     padding: 28px !important;
     position: relative;
@@ -182,6 +221,7 @@ button:focus-visible,
         0 24px 60px rgba(0, 0, 0, 0.32),
         0 0 0 1px rgba(255, 255, 255, 0.03) inset;
     z-index: 1;
+    animation: authCardEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
 }
 
 .auth-page::before,
@@ -200,6 +240,7 @@ button:focus-visible,
     top: -70px;
     left: -70px;
     background: radial-gradient(circle, rgba(61, 220, 151, 0.18), transparent 68%);
+    animation: floatBlob1 15s ease-in-out infinite;
 }
 
 .auth-page::after {
@@ -208,6 +249,7 @@ button:focus-visible,
     right: -100px;
     bottom: -80px;
     background: radial-gradient(circle, rgba(31, 182, 255, 0.18), transparent 68%);
+    animation: floatBlob2 18s ease-in-out infinite reverse;
 }
 
 .auth-eyebrow {
@@ -299,14 +341,20 @@ select:-webkit-autofill {
     padding: 12px 14px;
 }
 
+@keyframes inputFocusPulse {
+  0% { box-shadow: 0 0 0 4px rgba(31, 182, 255, 0.12); }
+  50% { box-shadow: 0 0 0 8px rgba(31, 182, 255, 0.22); }
+  100% { box-shadow: 0 0 0 4px rgba(31, 182, 255, 0.12); }
+}
+
 input:focus,
 textarea:focus,
 select:focus,
 .form-control:focus,
 .form-select:focus {
     border-color: rgba(137, 232, 255, 0.42) !important;
-    box-shadow: 0 0 0 4px rgba(31, 182, 255, 0.12) !important;
     background: rgba(255, 255, 255, 0.1) !important;
+    animation: inputFocusPulse 2s infinite;
 }
 
 .form-label {
@@ -383,6 +431,7 @@ select:focus,
 
 .dashboard-shell {
   position: relative;
+  z-index: 1;
 }
 
 .dashboard-shell::before {
@@ -395,6 +444,7 @@ select:focus,
   z-index: 0;
 }
 
+
 .dashboard-hero {
   position: relative;
   overflow: hidden;
@@ -403,6 +453,7 @@ select:focus,
   gap: 28px;
   padding: 32px !important;
   margin-bottom: 24px;
+  isolation: isolate;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
     var(--si-panel) !important;
@@ -484,15 +535,18 @@ select:focus,
   display: grid;
   gap: 14px;
   align-self: stretch;
+  position: relative;
+  z-index: 1;
 }
 
 .dashboard-stat-card {
   position: relative;
   padding: 18px 20px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--si-shadow-soft);
+  backdrop-filter: blur(10px);
 }
 
 .dashboard-stat-card::before {

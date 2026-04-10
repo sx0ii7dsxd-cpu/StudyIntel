@@ -158,6 +158,19 @@
         isDragging = false;
         timer.style.cursor = "grab";
       });
+
+      // Parallax text effect on scroll
+      let ticking = false;
+      document.addEventListener("scroll", () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            const scrolled = window.scrollY;
+            document.documentElement.style.setProperty('--scroll-y', `${scrolled}px`);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
     </script>
   </body>
 </html>
