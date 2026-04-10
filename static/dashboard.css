@@ -1,0 +1,308 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at top, #22335f, #0d1324 62%);
+    color: #e7eefc;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 40px;
+}
+
+.card {
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(16px);
+    border-radius: 22px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #3ddc97, #1fb6ff);
+    color: #09111d;
+    text-decoration: none;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.glass,
+.section {
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(16px);
+    border-radius: 22px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+}
+
+.section {
+    margin-top: 24px;
+}
+
+.teacher-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.teacher-hero-side {
+    min-width: 220px;
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.teacher-eyebrow {
+    margin-bottom: 8px;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(231, 238, 252, 0.66);
+}
+
+.teacher-subtitle {
+    max-width: 620px;
+    line-height: 1.6;
+}
+
+.teacher-label {
+    margin-bottom: 6px;
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(231, 238, 252, 0.66);
+}
+
+.teacher-class-code {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #72f2b7;
+}
+
+.student-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.student-item {
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.teacher-material-list {
+    gap: 14px;
+}
+
+.teacher-material-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.teacher-material-name {
+    flex: 1;
+    min-width: 0;
+    font-weight: 600;
+}
+
+.teacher-material-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.teacher-action-btn {
+    margin-top: 0;
+}
+
+.teacher-delete-btn {
+    background: rgba(255, 107, 107, 0.18);
+    color: #ffd8d8;
+}
+
+.teacher-edit-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.teacher-edit-input {
+    min-width: 150px;
+    margin-top: 0 !important;
+}
+
+input[type="text"],
+input[type="file"] {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+    color: #e7eefc;
+}
+
+h2,
+h3,
+h4 {
+    margin-bottom: 10px;
+}
+
+p {
+    color: rgba(231, 238, 252, 0.74);
+}
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.leaderboard-card {
+    display: grid;
+    grid-template-columns: 86px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.leaderboard-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.leaderboard-rank-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.leaderboard-rank {
+    min-width: 56px;
+    text-align: center;
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #e7eefc;
+}
+
+.leaderboard-name {
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: #e7eefc;
+}
+
+.leaderboard-minutes-wrap {
+    text-align: right;
+}
+
+.leaderboard-minutes {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #f6fbff;
+}
+
+.leaderboard-minutes-label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(231, 238, 252, 0.74);
+}
+
+.leaderboard-card-gold {
+    background: linear-gradient(135deg, rgba(255, 215, 102, 0.2), rgba(255, 255, 255, 0.08));
+    border-color: rgba(255, 215, 102, 0.34);
+    box-shadow: 0 18px 38px rgba(255, 199, 81, 0.16);
+}
+
+.leaderboard-card-gold .leaderboard-rank {
+    color: #ffd76b;
+    text-shadow: 0 0 18px rgba(255, 215, 102, 0.32);
+}
+
+.leaderboard-card-silver {
+    background: linear-gradient(135deg, rgba(216, 225, 235, 0.18), rgba(255, 255, 255, 0.06));
+    border-color: rgba(216, 225, 235, 0.26);
+    box-shadow: 0 16px 34px rgba(186, 198, 210, 0.12);
+}
+
+.leaderboard-card-silver .leaderboard-rank {
+    color: #d8e1eb;
+}
+
+.leaderboard-card-bronze {
+    background: linear-gradient(135deg, rgba(205, 127, 80, 0.2), rgba(255, 255, 255, 0.06));
+    border-color: rgba(205, 127, 80, 0.28);
+    box-shadow: 0 16px 34px rgba(205, 127, 80, 0.12);
+}
+
+.leaderboard-card-bronze .leaderboard-rank {
+    color: #d59563;
+}
+
+@media (max-width: 768px) {
+    .teacher-hero {
+        flex-direction: column;
+    }
+
+    .teacher-hero-side {
+        width: 100%;
+    }
+
+    .leaderboard-card {
+        grid-template-columns: 64px 1fr auto;
+        gap: 12px;
+        padding: 14px;
+    }
+
+    .leaderboard-rank {
+        min-width: 42px;
+        font-size: 1.3rem;
+    }
+
+    .teacher-material-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .teacher-material-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}

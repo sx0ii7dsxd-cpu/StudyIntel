@@ -1,0 +1,220 @@
+{% extends "base_timer.html" %}
+{% block title %}Class Chat{% endblock %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}" />
+{% endblock %}
+{% block navbar_title %}Class Chat{% endblock %}
+{% block navbar_actions %}
+<a href="/dashboard" class="btn btn-light btn-sm">Back</a>
+{% endblock %}
+{% block content %}
+{% if warning %}
+<div class="warning-message">{{ warning }}</div>
+{% endif %}
+
+<div class="container mt-4">
+  <div class="chat-box" id="chatBox">
+    {% for msg in messages %}
+    <div
+      class="message {% if msg.user_id == session['user_id'] %}me{% else %}other{% endif %}"
+    >
+      <div class="sender">
+        {% if msg.user_id == 0 %} 🤖 Bot {% else %} {{ msg.username }} {% endif %}
+      </div>
+
+      <div class="bubble">{{ msg.message }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <button id="scrollBtn" class="scroll-btn" onclick="scrollToBottom()">
+    ⬇ New Messages
+  </button>
+
+  <div class="chat-input mt-3">
+    <input
+      id="msgInput"
+      name="message"
+      placeholder="Type message or @bot ..."
+      required
+    />
+    <button id="sendBtn" onclick="sendMessage(event)">Send</button>
+  </div>
+</div>
+
+<script>
+  //---------- AI CHAT STATE ---------
+  window.studyBotMessages = window.studyBotMessages || [];
+
+  //---------- AI MESSAGE HTML SAFETY ---------
+  function escapeHtml(value) {
+    const div = document.createElement("div");
+    div.textContent = value;
+    return div.innerHTML;
+  }
+
+  //---------- AI MESSAGE RENDER ---------
+  function renderPendingBotMessages() {
+    const box = document.getElementById("chatBox");
+
+    window.studyBotMessages.forEach((message) => {
+      box.insertAdjacentHTML(
+        "beforeend",
+        `
+          <div class="message other">
+            <div class="sender">🤖 Bot</div>
+            <div class="bubble">${escapeHtml(message)}</div>
+          </div>
+        `
+      );
+    });
+  }
+
+  //---------- AI MESSAGE APPEND ---------
+  function appendBotMessage(message) {
+    window.studyBotMessages.push(message);
+    const box = document.getElementById("chatBox");
+    box.insertAdjacentHTML(
+      "beforeend",
+      `
+        <div class="message other">
+          <div class="sender">🤖 Bot</div>
+          <div class="bubble">${escapeHtml(message)}</div>
+        </div>
+      `
+    );
+    scrollToBottom();
+  }
+
+  function loadMessages() {
+    let box = document.getElementById("chatBox");
+
+    const prevScrollTop = box.scrollTop;
+    const prevScrollHeight = box.scrollHeight;
+
+    const wasAtBottom = prevScrollHeight - prevScrollTop <= box.clientHeight + 10;
+
+    fetch("/class_chat?ajax=1")
+      .then((res) => res.text())
+      .then((data) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, "text/html");
+        const newChat = doc.querySelector(".chat-box").innerHTML;
+
+        box.innerHTML = newChat;
+        renderPendingBotMessages();
+
+        const newScrollHeight = box.scrollHeight;
+
+        if (typeof window.firstLoad === "undefined") {
+          window.firstLoad = true;
+        }
+
+        if (window.firstLoad) {
+          box.scrollTop = newScrollHeight;
+          window.firstLoad = false;
+          return;
+        }
+
+        if (wasAtBottom) {
+          box.scrollTop = newScrollHeight;
+          document.getElementById("scrollBtn").style.display = "none";
+        } else {
+          box.scrollTop = prevScrollTop;
+          document.getElementById("scrollBtn").style.display = "block";
+        }
+      });
+  }
+
+  setInterval(loadMessages, 2000);
+  loadMessages();
+
+  function scrollToBottom() {
+    let box = document.getElementById("chatBox");
+    box.scrollTop = box.scrollHeight;
+
+    document.getElementById("scrollBtn").style.display = "none";
+  }
+
+  function sendMessage(e) {
+    e.preventDefault();
+
+    const inputEl = document.getElementById("msgInput");
+    const msg = inputEl.value.trim();
+
+    if (!msg) {
+      inputEl.value = "";
+      return;
+    }
+
+    //---------- AI MESSAGE DETECTION ---------
+    if (msg.startsWith("@bot")) {
+      const prompt = msg.slice(4).trim();
+      if (!prompt) {
+        alert("Type a question after @bot");
+        return;
+      }
+
+      //---------- AI API CALL ---------
+      fetch("/ask_ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: prompt }),
+      })
+        .then((res) => res.text().then((text) => ({ ok: res.ok, text })))
+        .then(({ ok, text }) => {
+          if (!ok) {
+            alert(text);
+            return;
+          }
+
+          inputEl.value = "";
+          inputEl.focus();
+          appendBotMessage(text);
+        });
+
+      return;
+    }
+
+    fetch("/class_chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "message=" + encodeURIComponent(msg),
+    })
+      .then((res) => res.text())
+      .then((data) => {
+        if (data.includes("⚠️")) {
+          alert(data);
+          return;
+        }
+
+        document.getElementById("msgInput").value = "";
+        document.getElementById("msgInput").focus();
+
+        setTimeout(loadMessages, 200);
+      });
+  }
+
+  const input = document.getElementById("msgInput");
+  const btn = document.getElementById("sendBtn");
+
+  input.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const val = this.value.trim();
+      if (!val) return;
+      sendMessage(e);
+    }
+  });
+
+  input.addEventListener("input", function () {
+    btn.disabled = !this.value.trim();
+  });
+
+  btn.disabled = true;
+</script>
+{% endblock %}

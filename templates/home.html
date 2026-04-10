@@ -1,0 +1,251 @@
+{% extends "base_timer.html" %} {% block title %}Dashboard{% endblock %} {% block
+content %}
+
+<div class="container mt-4 dashboard-shell">
+  <section class="dashboard-hero glass">
+    <div class="dashboard-hero-copy">
+      <p class="dashboard-kicker">Student Dashboard</p>
+      <h1 class="dashboard-title">Build a stronger study streak, one focused day at a time.</h1>
+      <p class="dashboard-subtitle">
+        Track your study minutes, jump into sessions fast, and stay connected with your class from one place.
+      </p>
+
+      <div class="dashboard-hero-actions">
+        <a href="/study" class="btn btn-primary">Start Studying</a>
+        <a href="{{ url_for('music_player') }}" target="StudyIntelMusicPlayer" class="btn btn-light">
+          Focus Zone
+        </a>
+      </div>
+    </div>
+
+    <div class="dashboard-hero-stats">
+      <div class="dashboard-stat-card">
+        <span class="dashboard-stat-label">Class Code</span>
+        <strong class="dashboard-stat-value dashboard-stat-code">{{ session["class_code"] }}</strong>
+      </div>
+      <div class="dashboard-stat-card">
+        <span class="dashboard-stat-label">Today's Study</span>
+        <strong class="dashboard-stat-value">{{ today_minutes }} min</strong>
+      </div>
+      <div class="dashboard-stat-card">
+        <span class="dashboard-stat-label">Current Status</span>
+        <strong id="studyStatus" class="dashboard-stat-value dashboard-stat-status">Checking status...</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-section">
+    <div class="card p-4 glass dashboard-insight-card">
+      <div class="dashboard-section-head">
+        <div>
+          <p class="dashboard-section-kicker">Smart Insight</p>
+          <h4 class="dashboard-section-title">Your study snapshot</h4>
+        </div>
+      </div>
+      <p class="dashboard-insight-text">{{ insight }}</p>
+    </div>
+  </section>
+
+  <div class="row g-4 align-items-stretch">
+    <div class="col-lg-4">
+      <div class="card p-4 glass h-100 dashboard-actions-card">
+        <div class="dashboard-section-head">
+          <div>
+            <p class="dashboard-section-kicker">Quick Access</p>
+            <h4 class="dashboard-section-title">Actions</h4>
+          </div>
+        </div>
+
+        <div class="dashboard-action-grid">
+          <a href="/study" class="dashboard-action-tile">
+            <span class="dashboard-action-icon">⏱</span>
+            <span class="dashboard-action-text">
+              <strong>Study Session</strong>
+              <small>Jump back into focused time</small>
+            </span>
+          </a>
+
+          <a href="/private_chat" class="dashboard-action-tile">
+            <span class="dashboard-action-icon">💬</span>
+            <span class="dashboard-action-text">
+              <strong>Private Chat</strong>
+              <small>Ask classmates directly</small>
+            </span>
+          </a>
+
+          <a href="/class_chat" class="dashboard-action-tile">
+            <span class="dashboard-action-icon">👥</span>
+            <span class="dashboard-action-text">
+              <strong>Class Chat</strong>
+              <small>Stay active with your class</small>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card p-4 glass h-100 dashboard-materials-card">
+        <div class="dashboard-section-head">
+          <div>
+            <p class="dashboard-section-kicker">Resources</p>
+            <h4 class="dashboard-section-title">Study Materials</h4>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          {% for m in materials %}
+          <div class="list-group-item container-row material-row mb-2">
+            <span class="material-name">{{ m.title }}</span>
+
+            <div class="material-actions">
+              <a
+                href="/view_material/{{ m.id }}"
+                target="_blank"
+                class="btn btn-sm btn-primary"
+              >
+                Preview
+              </a>
+
+              <a
+                href="/download_material/{{ m.id }}"
+                class="btn btn-sm btn-success"
+              >
+                Download
+              </a>
+            </div>
+          </div>
+          {% else %}
+          <div class="dashboard-empty-state">
+            No study materials have been uploaded yet.
+          </div>
+          {% endfor %}
+        </div>
+
+        <p class="note_01">
+          Note:- Don't share your downloaded materials outside the class.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-xl-7">
+      <div class="card p-4 glass h-100 dashboard-leaderboard-card">
+        <div class="dashboard-section-head">
+          <div>
+            <p class="dashboard-section-kicker">Competition</p>
+            <h4 class="dashboard-section-title">Weekly Leaderboard</h4>
+          </div>
+        </div>
+
+        <div class="leaderboard-list mt-3">
+          {% for user in leaderboard %}
+          <div
+            class="leaderboard-card {% if loop.index == 1 %}leaderboard-card-gold{% elif loop.index == 2 %}leaderboard-card-silver{% elif loop.index == 3 %}leaderboard-card-bronze{% endif %}"
+          >
+            <div class="leaderboard-rank-wrap">
+              <div class="leaderboard-rank">
+                {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
+              </div>
+            </div>
+
+            <div class="leaderboard-name-wrap">
+              <div class="leaderboard-name">{{ user.username }}</div>
+            </div>
+
+            <div class="leaderboard-minutes-wrap">
+              <div class="leaderboard-minutes">{{ user.total }}</div>
+              <div class="leaderboard-minutes-label">minutes</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-5">
+      <div class="card p-4 glass h-100 dashboard-calendar-card">
+        <div class="study-calendar-header">
+          <div>
+            <p class="dashboard-section-kicker">Consistency</p>
+            <h4 class="dashboard-section-title">Study Heatmap</h4>
+            <p class="study-calendar-subtitle">
+              {{ month_heatmap.month_label }} · {{ month_heatmap.studied_days }} active days · {{ month_heatmap.total_minutes }} min total
+            </p>
+          </div>
+          <div class="study-calendar-legend" aria-label="Heat level legend">
+            <span class="study-calendar-legend-label">None</span>
+            <span class="study-calendar-legend-box lvl-0"></span>
+            <span class="study-calendar-legend-box lvl-1"></span>
+            <span class="study-calendar-legend-box lvl-2"></span>
+            <span class="study-calendar-legend-label">Good</span>
+          </div>
+        </div>
+
+        <div class="study-calendar-weekdays">
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
+          <span>Sun</span>
+        </div>
+
+        <div class="study-calendar-grid">
+          {% for day in month_heatmap.calendar_days %}
+            {% if day %}
+            <div
+              class="study-calendar-day lvl-{{ day.level }} {% if day.is_today %}study-calendar-day-today{% endif %}"
+              title="{{ day.date }} → {{ day.minutes }} min"
+            >
+              <span class="study-calendar-day-number">{{ day.day_number }}</span>
+              <span class="study-calendar-day-minutes">
+                {% if day.minutes > 0 %}
+                  {{ day.minutes }} min
+                {% else %}
+                  0 min
+                {% endif %}
+              </span>
+            </div>
+            {% else %}
+            <div class="study-calendar-day study-calendar-day-empty" aria-hidden="true"></div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ------------- FLOATING TIMER ------------- -->
+
+<script>
+  function updateStudyStatus() {
+    fetch("/get_active_seconds")
+      .then((res) => res.text())
+      .then((sec) => {
+        sec = parseInt(sec) || 0;
+        const statusEl = document.getElementById("studyStatus");
+
+        if (!statusEl) return;
+
+        if (sec > 0) {
+          statusEl.innerText = "🟢 Currently Studying";
+          statusEl.className = "dashboard-stat-value dashboard-stat-status dashboard-stat-status-live";
+        } else {
+          statusEl.innerText = "⏸ Not Studying";
+          statusEl.className = "dashboard-stat-value dashboard-stat-status dashboard-stat-status-idle";
+        }
+      });
+  }
+
+  setInterval(updateStudyStatus, 2000);
+  updateStudyStatus();
+</script>
+
+<div class="studyai-popup">
+  <div class="studyai-popup-text">Struggling? Lemme help you 🙂</div>
+  <a href="/studyai?view=tools" class="btn btn-info btn-sm studyai-popup-btn">Try StudyAI</a>
+</div>
+
+{% endblock %}

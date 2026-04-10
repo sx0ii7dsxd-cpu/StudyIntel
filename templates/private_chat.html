@@ -1,0 +1,230 @@
+{% extends "base_timer.html" %}
+{% block title %}Private Chat{% endblock %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}" />
+{% endblock %}
+{% block navbar_title %}Private Chat{% endblock %}
+{% block navbar_actions %}
+<a href="/dashboard" class="btn btn-light btn-sm">Back</a>
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <form method="GET">
+    <select
+      name="user_id"
+      class="form-select mb-3"
+      onchange="this.form.submit()"
+    >
+      <option value="">Select User</option>
+
+      {% for u in users %}
+      {% set is_selected = (selected_user == u.id|string) %}
+      <option value="{{ u.id }}" {{ 'selected' if is_selected else '' }}>
+        {{ u.username }}
+      </option>
+      {% endfor %}
+    </select>
+  </form>
+
+  {% if warning %}
+  <div class="warning-message">{{ warning }}</div>
+  {% endif %}
+
+  <div class="chat-box" id="chatBox"></div>
+
+  <button id="scrollBtn" class="scroll-btn" onclick="scrollToBottom()">
+    ⬇ New Messages
+  </button>
+
+  {% if selected_user %}
+  <div class="chat-input mt-3">
+    <input
+      id="msgInput"
+      name="message"
+      placeholder="Type message or @bot ..."
+      required
+    />
+    <button id="sendBtn" onclick="sendMessage(event)">Send</button>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  //---------- AI CHAT STATE ---------
+  window.studyBotMessages = window.studyBotMessages || [];
+
+  //---------- AI MESSAGE HTML SAFETY ---------
+  function escapeHtml(value) {
+    const div = document.createElement("div");
+    div.textContent = value;
+    return div.innerHTML;
+  }
+
+  //---------- AI MESSAGE RENDER ---------
+  function renderPendingBotMessages() {
+    const box = document.getElementById("chatBox");
+
+    window.studyBotMessages.forEach((message) => {
+      box.insertAdjacentHTML(
+        "beforeend",
+        `
+          <div class="sender">🤖 Bot</div>
+          <div class="message other">
+            <div class="bubble">${escapeHtml(message)}</div>
+          </div>
+        `
+      );
+    });
+  }
+
+  //---------- AI MESSAGE APPEND ---------
+  function appendBotMessage(message) {
+    window.studyBotMessages.push(message);
+    const box = document.getElementById("chatBox");
+    box.insertAdjacentHTML(
+      "beforeend",
+      `
+        <div class="sender">🤖 Bot</div>
+        <div class="message other">
+          <div class="bubble">${escapeHtml(message)}</div>
+        </div>
+      `
+    );
+    scrollToBottom();
+  }
+
+  function loadMessages() {
+    const userId = "{{selected_user}}";
+    if (!userId) return;
+
+    let box = document.getElementById("chatBox");
+
+    const prevScrollTop = box.scrollTop;
+    const prevScrollHeight = box.scrollHeight;
+
+    const wasAtBottom = prevScrollHeight - prevScrollTop <= box.clientHeight + 10;
+
+    fetch(`/get_private_messages?user_id=${userId}`)
+      .then((res) => res.text())
+      .then((data) => {
+        box.innerHTML = data;
+        renderPendingBotMessages();
+
+        const newScrollHeight = box.scrollHeight;
+
+        if (typeof window.firstLoad === "undefined") {
+          window.firstLoad = true;
+        }
+
+        if (window.firstLoad) {
+          box.scrollTop = newScrollHeight;
+          window.firstLoad = false;
+          return;
+        }
+
+        if (wasAtBottom) {
+          box.scrollTop = newScrollHeight;
+          document.getElementById("scrollBtn").style.display = "none";
+        } else {
+          box.scrollTop = prevScrollTop;
+          document.getElementById("scrollBtn").style.display = "block";
+        }
+      });
+  }
+
+  setInterval(loadMessages, 2000);
+  loadMessages();
+
+  function scrollToBottom() {
+    let box = document.getElementById("chatBox");
+    box.scrollTop = box.scrollHeight;
+
+    document.getElementById("scrollBtn").style.display = "none";
+  }
+
+  function sendMessage(e) {
+    e.preventDefault();
+
+    const inputEl = document.getElementById("msgInput");
+    const msg = inputEl.value.trim();
+
+    if (!msg) {
+      inputEl.value = "";
+      return;
+    }
+
+    //---------- AI MESSAGE DETECTION ---------
+    if (msg.startsWith("@bot")) {
+      const prompt = msg.slice(4).trim();
+      if (!prompt) {
+        alert("Type a question after @bot");
+        return;
+      }
+
+      //---------- AI API CALL ---------
+      fetch("/ask_ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: prompt }),
+      })
+        .then((res) => res.text().then((text) => ({ ok: res.ok, text })))
+        .then(({ ok, text }) => {
+          if (!ok) {
+            alert(text);
+            return;
+          }
+
+          inputEl.value = "";
+          inputEl.focus();
+          appendBotMessage(text);
+        });
+
+      return;
+    }
+
+    const userId = "{{selected_user}}";
+
+    fetch(`/private_chat?user_id=${userId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "message=" + encodeURIComponent(msg),
+    })
+      .then((res) => res.text())
+      .then((data) => {
+        if (data.includes("⚠️")) {
+          alert(data);
+          return;
+        }
+
+        document.getElementById("msgInput").value = "";
+        document.getElementById("msgInput").focus();
+
+        setTimeout(loadMessages, 200);
+      });
+  }
+
+  const input = document.getElementById("msgInput");
+  if (input) {
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const val = this.value.trim();
+        if (!val) return;
+        sendMessage(e);
+      }
+    });
+  }
+
+  if (input) {
+    const btn = document.getElementById("sendBtn");
+    input.addEventListener("input", function () {
+      btn.disabled = !this.value.trim();
+    });
+    btn.disabled = true;
+  }
+</script>
+{% endblock %}

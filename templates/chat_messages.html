@@ -1,0 +1,19 @@
+<div class="chat-box">
+    {% for msg in messages %}
+        <div
+            class="message {% if msg.user_id == session['user_id'] %}me{% else %}other{% endif %}"
+        >
+            <div class="sender">
+                {% if msg.user_id == 0 %}
+                    🤖 Bot
+                {% else %}
+                    {{ msg.username }}
+                {% endif %}
+            </div>
+
+            <div class="bubble">
+                {{ msg.message }}
+            </div>
+        </div>
+    {% endfor %}
+</div>

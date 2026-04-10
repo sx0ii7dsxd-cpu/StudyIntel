@@ -1,0 +1,257 @@
+{% extends "base_timer.html" %}
+{% block title %}StudyAI{% endblock %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='studyai.css') }}" />
+{% endblock %}
+{% block navbar_title %}StudyAI{% endblock %}
+{% block navbar_actions %}
+<a href="/dashboard" class="btn btn-light btn-sm">Back</a>
+<a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+{% endblock %}
+{% block content %}
+<div class="container mt-4 mb-5 studyai-shell">
+  <div class="studyai-toggle" role="tablist" aria-label="StudyAI views">
+    <span class="studyai-toggle-indicator" aria-hidden="true"></span>
+    <button
+      id="toolsToggle"
+      class="studyai-toggle-btn active"
+      type="button"
+      data-view="tools"
+      aria-selected="true"
+    >
+      Study Tools
+    </button>
+    <button
+      id="chatToggle"
+      class="studyai-toggle-btn"
+      type="button"
+      data-view="chat"
+      aria-selected="false"
+    >
+      AI Assistant
+    </button>
+  </div>
+
+  <div class="studyai-view-stack" data-active-view="tools">
+    <div id="toolsView" class="studyai-view active" data-panel="tools" aria-hidden="false">
+      <div class="card p-4 glass studyai-panel studyai-card-height">
+        <p class="studyai-eyebrow">Study Tools</p>
+        <h3 class="studyai-heading">Study smarter with AI</h3>
+        <p class="studyai-copy">
+          Paste your class notes, ask doubts, or generate practice questions in one place.
+        </p>
+
+        <div class="studyai-tool-buttons">
+          <button class="btn btn-info studyai-tool-btn" type="button" data-tool="summarize">
+            Summarize Notes
+          </button>
+          <button class="btn btn-success studyai-tool-btn" type="button" data-tool="questions">
+            Generate Questions
+          </button>
+        </div>
+
+        <label class="form-label mt-4" for="studyaiInput">Notes or topic</label>
+        <textarea
+          id="studyaiInput"
+          class="form-control studyai-textarea"
+          placeholder="Paste chapter notes, definitions, formulas, or a topic here..."
+        ></textarea>
+
+        <div id="studyaiOutput" class="studyai-output mt-3">
+          Your summaries and question sets will appear here.
+        </div>
+      </div>
+    </div>
+
+    <div id="chatView" class="studyai-view" data-panel="chat" aria-hidden="true">
+      <div class="card p-4 glass studyai-panel studyai-card-height">
+        <div class="studyai-chat-header">
+          <div>
+            <p class="studyai-eyebrow mb-1">AI Chat</p>
+            <h3 class="studyai-heading mb-0">Student Assistant</h3>
+          </div>
+        </div>
+
+        <div id="studyaiChatBox" class="chat-box studyai-chat-box">
+          <div class="message other">
+            <div class="sender">StudyAI</div>
+            <div class="bubble">
+              Ask any study doubt, revision question, or concept explanation.
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input mt-3">
+          <input
+            id="studyaiChatInput"
+            placeholder="Ask StudyAI anything about your studies..."
+            required
+          />
+          <button id="studyaiSendBtn" type="button">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function escapeHtml(value) {
+    const div = document.createElement("div");
+    div.textContent = value;
+    return div.innerHTML;
+  }
+
+  function formatStudyAiResponse(text) {
+    const cleaned = escapeHtml((text || "").trim().replace(/\n{3,}/g, "\n\n"));
+    const withHtml = cleaned
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/^### (.*)$/gim, "<h3>$1</h3>")
+      .replace(/^## (.*)$/gim, "<h2>$1</h2>")
+      .replace(/^# (.*)$/gim, "<h1>$1</h1>")
+      .replace(/^\s*[-*]\s+(.*)$/gim, "<li>$1</li>");
+
+    return withHtml
+      .replace(/(<li>.*<\/li>)/gims, "<ul>$1</ul>")
+      .replace(/<\/ul>\s*<ul>/g, "")
+      .replace(/\n/g, "<br>");
+  }
+
+  function renderStudyAiText(target, text) {
+    target.innerHTML = formatStudyAiResponse(text);
+  }
+
+  function appendStudyAiMessage(sender, message, type) {
+    const box = document.getElementById("studyaiChatBox");
+    const alignClass = type === "me" ? "me" : "other";
+    const bubbleContent = formatStudyAiResponse(message);
+
+    box.insertAdjacentHTML(
+      "beforeend",
+      `
+        <div class="message ${alignClass}">
+          <div class="sender">${escapeHtml(sender)}</div>
+          <div class="bubble">${bubbleContent}</div>
+        </div>
+      `
+    );
+
+    box.scrollTop = box.scrollHeight;
+  }
+
+  async function sendStudyAiChat() {
+    const input = document.getElementById("studyaiChatInput");
+    const button = document.getElementById("studyaiSendBtn");
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    appendStudyAiMessage("You", message, "me");
+    input.value = "";
+    button.disabled = true;
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to get StudyAI reply");
+      }
+
+      appendStudyAiMessage("StudyAI", data.reply, "other");
+    } catch (error) {
+      appendStudyAiMessage("StudyAI", error.message, "other");
+    } finally {
+      button.disabled = false;
+      input.focus();
+    }
+  }
+
+  async function runStudyTool(toolName) {
+    const input = document.getElementById("studyaiInput");
+    const output = document.getElementById("studyaiOutput");
+    const notes = input.value.trim();
+
+    if (!notes) {
+      output.textContent = "Add some notes or a topic first.";
+      return;
+    }
+
+    output.textContent = toolName === "summarize" ? "Summarizing..." : "Generating questions...";
+
+    try {
+      const response = await fetch(toolName === "summarize" ? "/api/summarize" : "/api/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notes }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "StudyAI request failed");
+      }
+
+      renderStudyAiText(output, data.result || "");
+    } catch (error) {
+      output.textContent = error.message;
+    }
+  }
+
+  function setStudyAiView(viewName) {
+    const isTools = viewName === "tools";
+    const toggle = document.querySelector(".studyai-toggle");
+    const viewStack = document.querySelector(".studyai-view-stack");
+    const toolsView = document.getElementById("toolsView");
+    const chatView = document.getElementById("chatView");
+    const toolsToggle = document.getElementById("toolsToggle");
+    const chatToggle = document.getElementById("chatToggle");
+
+    const nextView = isTools ? toolsView : chatView;
+    const currentView = isTools ? chatView : toolsView;
+
+    if (nextView.classList.contains("active")) {
+      return;
+    }
+
+    toggle.style.setProperty("--toggle-shift", isTools ? "0%" : "100%");
+    viewStack.dataset.activeView = viewName;
+    currentView.classList.remove("active");
+    currentView.setAttribute("aria-hidden", "true");
+    nextView.classList.add("active");
+    nextView.setAttribute("aria-hidden", "false");
+
+    toolsView.setAttribute("aria-hidden", String(!isTools));
+    chatView.setAttribute("aria-hidden", String(isTools));
+
+    toolsToggle.classList.toggle("active", isTools);
+    chatToggle.classList.toggle("active", !isTools);
+    toolsToggle.setAttribute("aria-selected", String(isTools));
+    chatToggle.setAttribute("aria-selected", String(!isTools));
+  }
+
+  const initialView =
+    new URLSearchParams(window.location.search).get("view") === "chat" ? "chat" : "tools";
+  setStudyAiView(initialView);
+
+  document.getElementById("studyaiSendBtn").addEventListener("click", sendStudyAiChat);
+
+  document.getElementById("studyaiChatInput").addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      sendStudyAiChat();
+    }
+  });
+
+  document.querySelectorAll("[data-tool]").forEach((button) => {
+    button.addEventListener("click", () => runStudyTool(button.dataset.tool));
+  });
+
+  document.querySelectorAll("[data-view]").forEach((button) => {
+    button.addEventListener("click", () => setStudyAiView(button.dataset.view));
+  });
+</script>
+{% endblock %}

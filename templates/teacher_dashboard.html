@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Teacher Dashboard</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='dashboard.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="glass teacher-hero">
+        <div>
+          <p class="teacher-eyebrow">Teacher Workspace</p>
+          <h2>Teacher Dashboard</h2>
+          <p class="teacher-subtitle">
+            Manage your classroom, upload materials, and keep an eye on student progress from one place.
+          </p>
+        </div>
+
+        <div class="teacher-hero-side">
+          <p class="teacher-label">Class Code</p>
+          <h3 class="teacher-class-code">{{ session["class_code"] }}</h3>
+          <p class="teacher-subtitle mb-0">Share this code with students.</p>
+          <a href="/logout" class="btn">Logout</a>
+        </div>
+      </div>
+
+      <!-- STUDENTS LIST -->
+      <div class="glass section">
+        <h4>👨‍🎓 Students</h4>
+
+        <div class="student-list">
+          {% for s in students %}
+          <div class="student-item">{{ s.username }}</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- LEADERBOARD -->
+      <div class="glass section">
+        <h4>🏆 Leaderboard</h4>
+        <div class="leaderboard-list">
+          {% for user in leaderboard %}
+          <div
+            class="leaderboard-card {% if loop.index == 1 %}leaderboard-card-gold{% elif loop.index == 2 %}leaderboard-card-silver{% elif loop.index == 3 %}leaderboard-card-bronze{% endif %}"
+          >
+            <div class="leaderboard-rank-wrap">
+              <div class="leaderboard-rank">
+                {% if loop.index == 1 %}
+                🥇
+                {% elif loop.index == 2 %}
+                🥈
+                {% elif loop.index == 3 %}
+                🥉
+                {% else %}
+                {{ loop.index }}
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="leaderboard-name-wrap">
+              <div class="leaderboard-name">{{ user.username }}</div>
+            </div>
+
+            <div class="leaderboard-minutes-wrap">
+              <div class="leaderboard-minutes">{{ user.total }}</div>
+              <div class="leaderboard-minutes-label">minutes</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!----------- UPLOAD MATERIAL ----------- -->
+
+      <div class="glass section">
+        <h4>📂 Upload Study Material</h4>
+
+        <form
+          action="/upload_material"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <input type="text" name="title" placeholder="Enter title" required />
+
+          <input type="file" name="file" required />
+
+          <button class="btn">Upload</button>
+        </form>
+      </div>
+      <!-- ---------- MATERIAL LIST  ---------- -->
+
+      <div class="glass section">
+        <h4>📚 Uploaded Materials</h4>
+
+        <div class="student-list teacher-material-list">
+          {% for m in materials %}
+          <div class="student-item teacher-material-row">
+            <span class="teacher-material-name">{{ m.title }}</span>
+
+            <div class="teacher-material-actions">
+              <a href="/view_material/{{ m.id }}" class="btn teacher-action-btn">View</a>
+
+              <a href="/delete_material/{{ m.id }}" class="btn teacher-action-btn teacher-delete-btn">Delete</a>
+
+              <form action="/edit_material/{{ m.id }}" method="POST" class="teacher-edit-form">
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Edit"
+                  required
+                  class="teacher-edit-input"
+                />
+                <button class="btn teacher-action-btn">Save</button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

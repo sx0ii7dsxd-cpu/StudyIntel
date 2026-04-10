@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+  <head>
+    <title>StudyIntel Music Player</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='music_player.css') }}"
+    />
+  </head>
+  <body>
+    <div class="player-shell">
+      <p class="eyebrow">Study Music</p>
+      <h1 id="playerTrack" class="track">5:32pm</h1>
+      <p id="playerStatus" class="status">
+        Open this tab once, then your music can continue while you move around the app.
+      </p>
+
+      <div class="controls">
+        <button id="playButton" class="play-btn" type="button">Play</button>
+        <button id="nextButton" class="secondary-btn" type="button">Next</button>
+      </div>
+
+      <div class="slider-row">
+        <input id="volumeSlider" type="range" min="0" max="100" value="35" />
+        <span id="volumeValue">35%</span>
+      </div>
+
+      <div id="playlistList" class="playlist"></div>
+    </div>
+
+    <audio id="persistentPlayer"></audio>
+
+    <script>
+      const musicChannel = new BroadcastChannel("studyintel-music-control");
+      const player = document.getElementById("persistentPlayer");
+      const playerTrack = document.getElementById("playerTrack");
+      const playerStatus = document.getElementById("playerStatus");
+      const playButton = document.getElementById("playButton");
+      const nextButton = document.getElementById("nextButton");
+      const volumeSlider = document.getElementById("volumeSlider");
+      const volumeValue = document.getElementById("volumeValue");
+      const playlistList = document.getElementById("playlistList");
+      const storageKey = "studyintelMusicWindowState";
+      const playlist = [
+        {
+          title: "5:32pm",
+          src: "{{ url_for('static', filename='music/5_32pm_spotdown.org.mp3') }}",
+        },
+        {
+          title: "Sakura Trees",
+          src: "{{ url_for('static', filename='music/Sakura Trees_spotdown.org.mp3') }}",
+        },
+        {
+          title: "Snowman",
+          src: "{{ url_for('static', filename='music/Snowman_spotdown.org.mp3') }}",
+        },
+        {
+          title: "With U",
+          src: "{{ url_for('static', filename='music/With U_spotdown.org.mp3') }}",
+        },
+        {
+          title: "My New Love",
+          src: "{{ url_for('static', filename='music/my new love_spotdown.org.mp3') }}",
+        },
+      ];
+
+      let currentTrackIndex = 0;
+      let pendingAutoplay = false;
+
+      function renderPlaylist() {
+        playlistList.innerHTML = "";
+
+        playlist.forEach((track, index) => {
+          const item = document.createElement("div");
+          item.className =
+            "playlist-item" + (index === currentTrackIndex ? " active" : "");
+          item.innerText = `${index + 1}. ${track.title}`;
+          playlistList.appendChild(item);
+        });
+      }
+
+      function buildState() {
+        return {
+          trackTitle: playlist[currentTrackIndex].title,
+          currentTrackIndex,
+          currentTime: player.currentTime || 0,
+          volume: player.volume,
+          isPlaying: !player.paused,
+        };
+      }
+
+      function broadcastState() {
+        const state = buildState();
+        localStorage.setItem(storageKey, JSON.stringify(state));
+        musicChannel.postMessage({
+          action: "state-update",
+          state,
+        });
+        playerTrack.innerText = state.trackTitle;
+        volumeSlider.value = String(Math.round(state.volume * 100));
+        volumeValue.innerText = `${Math.round(state.volume * 100)}%`;
+        playButton.innerText = state.isPlaying ? "Pause" : "Play";
+        playerStatus.innerText = state.isPlaying
+          ? "Playing across your study pages."
+          : "Paused. Press play here or from the site.";
+        renderPlaylist();
+      }
+
+      function loadTrack(index, options = {}) {
+        const { preserveTime = 0, autoplay = false } = options;
+        currentTrackIndex = index;
+        pendingAutoplay = autoplay;
+        player.src = playlist[currentTrackIndex].src;
+        player.load();
+        playerTrack.innerText = playlist[currentTrackIndex].title;
+        renderPlaylist();
+
+        player.addEventListener(
+          "loadedmetadata",
+          () => {
+            if (preserveTime > 0) {
+              player.currentTime = Math.min(preserveTime, player.duration || preserveTime);
+            }
+            broadcastState();
+          },
+          { once: true }
+        );
+      }
+
+      function playCurrentTrack() {
+        player.play().catch((error) => {
+          console.error("Persistent music playback failed:", error);
+          playerStatus.innerText = "Playback was blocked. Press Play again in this tab.";
+        });
+      }
+
+      function playNextTrack() {
+        const nextIndex = (currentTrackIndex + 1) % playlist.length;
+        loadTrack(nextIndex, { autoplay: true });
+      }
+
+      function restoreState() {
+        const rawState = localStorage.getItem(storageKey);
+        const defaultVolume = 0.35;
+
+        if (!rawState) {
+          player.volume = defaultVolume;
+          loadTrack(0);
+          broadcastState();
+          return;
+        }
+
+        try {
+          const state = JSON.parse(rawState);
+          const restoredIndex =
+            Number.isInteger(state.currentTrackIndex) &&
+            state.currentTrackIndex >= 0 &&
+            state.currentTrackIndex < playlist.length
+              ? state.currentTrackIndex
+              : 0;
+
+          player.volume = typeof state.volume === "number" ? state.volume : defaultVolume;
+          loadTrack(restoredIndex, {
+            preserveTime: state.currentTime || 0,
+            autoplay: false,
+          });
+        } catch (error) {
+          console.error("Persistent music restore failed:", error);
+          player.volume = defaultVolume;
+          loadTrack(0);
+          broadcastState();
+        }
+      }
+
+      player.addEventListener("canplay", () => {
+        if (!pendingAutoplay) return;
+        pendingAutoplay = false;
+        playCurrentTrack();
+      });
+
+      player.addEventListener("play", broadcastState);
+      player.addEventListener("pause", broadcastState);
+      player.addEventListener("timeupdate", broadcastState);
+      player.addEventListener("ended", playNextTrack);
+
+      playButton.addEventListener("click", () => {
+        if (player.paused) {
+          playCurrentTrack();
+        } else {
+          player.pause();
+        }
+      });
+
+      nextButton.addEventListener("click", () => {
+        playNextTrack();
+      });
+
+      volumeSlider.addEventListener("input", () => {
+        player.volume = Number(volumeSlider.value) / 100;
+        broadcastState();
+      });
+
+      musicChannel.onmessage = (event) => {
+        const { action, volume } = event.data || {};
+
+        if (action === "request-state") {
+          broadcastState();
+          return;
+        }
+
+        if (action === "toggle") {
+          if (player.paused) {
+            playCurrentTrack();
+          } else {
+            player.pause();
+          }
+          return;
+        }
+
+        if (action === "set-volume") {
+          player.volume = volume;
+          broadcastState();
+        }
+      };
+
+      restoreState();
+      renderPlaylist();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+{% extends "base_timer.html" %} {% block title %}Study Timer{% endblock %} {%
+block content %}
+
+<div class="study-page-shell d-flex justify-content-center align-items-center">
+  <div class="card p-4 glass text-center study-page-card">
+    <h2>Study Timer</h2>
+
+    <h1 id="timer" class="study-page-timer">00:00</h1>
+    <p id="status" class="mt-2 study-page-status">Paused</p>
+
+    <div class="mt-4 study-page-actions">
+      <button class="btn btn-success" onclick="start()">Start</button>
+      <button class="btn btn-warning" onclick="pause()">Pause</button>
+      <button class="btn btn-danger" onclick="stop()">Stop</button>
+    </div>
+
+    <a href="/dashboard" class="btn btn-light mt-3">Back</a>
+
+    <!-- ---------- CUSTOM POPUP ---------- -->
+    <div id="popup" class="popup-overlay" style="display: none">
+      <div class="popup-box">
+        <h4>Are you still studying?</h4>
+        <p id="countdown">Auto stopping in 10s</p>
+        <button class="btn btn-success" onclick="confirmContinue()">
+          Yes, Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let interval = null;
+
+    function updateDisplayFromBackend() {
+      fetch("/get_active_seconds")
+        .then((res) => res.text())
+        .then((data) => {
+          let seconds = parseInt(data) || 0;
+
+          let min = Math.floor(seconds / 60);
+          let sec = seconds % 60;
+
+          let formatted =
+            String(min).padStart(2, "0") + ":" + String(sec).padStart(2, "0");
+
+          document.getElementById("timer").innerText = formatted;
+
+          let floatEl = document.getElementById("timerDisplay");
+          if (floatEl) floatEl.innerText = formatted;
+
+          document.getElementById("status").innerText =
+            seconds > 0 ? "Running" : "Paused";
+        });
+    }
+
+    function start() {
+      fetch("/start_study");
+      updateDisplayFromBackend();
+    }
+
+    function pause() {
+      fetch("/pause_study", { method: "POST" });
+      updateDisplayFromBackend();
+    }
+
+    function stop() {
+      fetch("/stop_study", { method: "POST" }).then(() => {
+        updateDisplayFromBackend();
+        alert("Study session saved!");
+      });
+    }
+
+    // update every second
+    setInterval(updateDisplayFromBackend, 1000);
+    updateDisplayFromBackend();
+  </script>
+</div>
+{% endblock %}
