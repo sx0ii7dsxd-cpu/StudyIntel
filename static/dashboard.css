@@ -1,8 +1,8 @@
 .teacher-dashboard-page {
     background:
-        radial-gradient(circle at top left, rgba(79, 172, 254, 0.18), transparent 24%),
-        radial-gradient(circle at top right, rgba(61, 220, 151, 0.16), transparent 22%),
-        linear-gradient(180deg, #08111f 0%, #050811 100%);
+        radial-gradient(circle at top left, color-mix(in srgb, var(--si-accent-solid) 22%, transparent), transparent 24%),
+        radial-gradient(circle at top right, color-mix(in srgb, var(--si-accent-cool) 18%, transparent), transparent 22%),
+        linear-gradient(180deg, var(--si-bg-top) 0%, var(--si-bg-bottom) 100%);
 }
 
 .teacher-shell {
@@ -27,14 +27,14 @@
     right: -70px;
     top: -70px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(134, 231, 255, 0.2), transparent 70%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--si-accent-solid) 22%, transparent), transparent 70%);
     pointer-events: none;
 }
 
 .teacher-kicker,
 .teacher-section-kicker {
     margin: 0 0 12px;
-    color: #8de8ff;
+    color: var(--si-accent-solid);
     text-transform: uppercase;
     letter-spacing: 0.2em;
     font-size: 0.76rem;
@@ -53,7 +53,7 @@
 .teacher-description {
     max-width: 60ch;
     margin: 18px 0 0;
-    color: rgba(231, 238, 252, 0.78);
+    color: var(--si-text-muted);
     line-height: 1.75;
     font-size: 1rem;
 }
@@ -64,8 +64,9 @@
     align-self: start;
     padding: 24px;
     border-radius: 24px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--si-panel) 92%, rgba(255, 255, 255, 0.04)), color-mix(in srgb, var(--si-panel-soft) 94%, transparent));
+    border: 1px solid var(--si-border-strong);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
 }
 
 .teacher-chip {
@@ -74,7 +75,7 @@
     padding: 8px 12px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.08);
-    color: rgba(231, 238, 252, 0.76);
+    color: var(--si-text-muted);
     font-size: 0.76rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -86,13 +87,13 @@
     font-size: clamp(2rem, 5vw, 2.8rem);
     line-height: 1;
     letter-spacing: 0.16em;
-    color: #a7f0ff;
-    text-shadow: 0 0 24px rgba(30, 157, 191, 0.35);
+    color: var(--si-accent-solid);
+    text-shadow: 0 0 24px color-mix(in srgb, var(--si-accent-solid) 35%, transparent);
 }
 
 .teacher-panel-note {
     margin: 12px 0 0;
-    color: rgba(231, 238, 252, 0.7);
+    color: var(--si-text-muted);
     line-height: 1.65;
 }
 
@@ -104,15 +105,15 @@
 }
 
 .teacher-secondary-btn {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: var(--si-text) !important;
+    border: 1px solid var(--si-border-strong) !important;
 }
 
 .teacher-primary-btn {
-    background: linear-gradient(135deg, #8de8ff 0%, #4ade80 100%) !important;
+    background: var(--si-accent) !important;
     color: #08111f !important;
-    border: 1px solid rgba(141, 232, 255, 0.2) !important;
+    border: 1px solid color-mix(in srgb, var(--si-accent-solid) 28%, transparent) !important;
     text-shadow: none !important;
 }
 
@@ -144,7 +145,7 @@
 .teacher-overview-note {
     margin: 12px 0 0;
     max-width: 42ch;
-    color: rgba(231, 238, 252, 0.74);
+    color: var(--si-text-muted);
     line-height: 1.65;
 }
 
@@ -158,19 +159,19 @@
     padding: 24px;
     min-height: 168px;
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: color-mix(in srgb, var(--si-panel-soft) 88%, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--si-border);
 }
 
 .teacher-metric-highlight {
     background:
-        linear-gradient(135deg, rgba(61, 220, 151, 0.14), rgba(31, 182, 255, 0.08)),
-        rgba(18, 24, 43, 0.45);
+        linear-gradient(135deg, color-mix(in srgb, var(--si-accent-cool) 18%, transparent), color-mix(in srgb, var(--si-accent-solid) 14%, transparent)),
+        color-mix(in srgb, var(--si-panel) 90%, transparent);
 }
 
 .teacher-metric-label {
     display: block;
-    color: rgba(231, 238, 252, 0.66);
+    color: var(--si-text-soft);
     font-size: 0.76rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -187,26 +188,28 @@
 
 .teacher-metric-note {
     margin: 16px 0 0;
-    color: rgba(231, 238, 252, 0.72);
+    color: var(--si-text-muted);
     line-height: 1.65;
 }
 
 .teacher-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.95fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     align-items: start;
 }
 
-.teacher-main-column,
-.teacher-side-column {
+.teacher-main-column {
     display: grid;
     gap: 24px;
     align-content: start;
 }
 
-.teacher-side-column {
-    gap: 18px;
+.teacher-bottom-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.9fr);
+    gap: 24px;
+    align-items: start;
 }
 
 .teacher-section {
@@ -236,9 +239,9 @@
     align-items: center;
     padding: 10px 14px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: rgba(231, 238, 252, 0.72);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--si-border);
+    color: var(--si-text-muted);
     white-space: nowrap;
     font-size: 0.85rem;
 }
@@ -255,15 +258,15 @@
     gap: 14px;
     padding: 18px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: color-mix(in srgb, var(--si-panel-soft) 86%, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--si-border);
     transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .teacher-student-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(137, 232, 255, 0.24);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: color-mix(in srgb, var(--si-accent-solid) 28%, transparent);
+    background: color-mix(in srgb, var(--si-panel-soft) 92%, rgba(255, 255, 255, 0.04));
 }
 
 .teacher-student-avatar {
@@ -275,7 +278,7 @@
     font-size: 1.15rem;
     font-weight: 800;
     color: #08111f;
-    background: linear-gradient(135deg, #8de8ff 0%, #4ade80 100%);
+    background: var(--si-accent);
     flex-shrink: 0;
 }
 
@@ -289,7 +292,7 @@
 .teacher-material-meta,
 .teacher-upload-note {
     margin: 6px 0 0;
-    color: rgba(231, 238, 252, 0.68);
+    color: var(--si-text-muted);
     line-height: 1.55;
 }
 
@@ -299,8 +302,8 @@
 
 .teacher-upload-card {
     background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
-        rgba(18, 24, 43, 0.45) !important;
+        linear-gradient(180deg, color-mix(in srgb, var(--si-panel-soft) 96%, rgba(255, 255, 255, 0.04)), color-mix(in srgb, var(--si-panel) 92%, transparent)),
+        var(--si-panel) !important;
 }
 
 .teacher-library-card {
@@ -315,8 +318,8 @@
 .teacher-upload-banner {
     padding: 18px 20px;
     border-radius: 20px;
-    background: rgba(10, 17, 31, 0.46);
-    border: 1px solid rgba(141, 232, 255, 0.14);
+    background: color-mix(in srgb, var(--si-panel-soft) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--si-accent-solid) 20%, transparent);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -328,7 +331,7 @@
 
 .teacher-upload-banner p {
     margin: 6px 0 0;
-    color: rgba(231, 238, 252, 0.7);
+    color: var(--si-text-muted);
     line-height: 1.55;
     font-size: 0.92rem;
 }
@@ -339,13 +342,19 @@
 }
 
 .teacher-field span {
-    color: #f4f8ff;
+    color: color-mix(in srgb, var(--si-text) 92%, transparent);
     font-size: 0.88rem;
     font-weight: 600;
 }
 
-.teacher-field input {
+.teacher-field input[type="text"],
+.teacher-edit-input {
+    width: 100%;
+    min-height: 44px;
     margin-top: 0 !important;
+    padding: 10px 16px !important;
+    border-radius: 18px !important;
+    line-height: 1.2;
 }
 
 .teacher-file-field {
@@ -354,12 +363,16 @@
 
 .teacher-file-field input[type="file"] {
     position: absolute;
-    inset: 34px 0 0;
-    width: 100%;
-    height: calc(100% - 34px);
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
     opacity: 0;
-    cursor: pointer;
-    z-index: 2;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    pointer-events: none;
 }
 
 .teacher-file-shell {
@@ -369,7 +382,7 @@
     align-items: center;
     padding: 14px 16px;
     border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--si-border);
     background: rgba(255, 255, 255, 0.04);
     min-height: 78px;
     transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
@@ -377,7 +390,7 @@
 
 .teacher-file-field:hover .teacher-file-shell,
 .teacher-file-field input[type="file"]:focus + .teacher-file-shell {
-    border-color: rgba(141, 232, 255, 0.26);
+    border-color: color-mix(in srgb, var(--si-accent-solid) 28%, transparent);
     background: rgba(255, 255, 255, 0.06);
     transform: translateY(-1px);
 }
@@ -389,7 +402,7 @@
     min-width: 122px;
     padding: 11px 16px;
     border-radius: 999px;
-    background: linear-gradient(135deg, #38bdf8 0%, #22c55e 100%);
+    background: var(--si-accent);
     color: #08111f;
     font-weight: 700;
     text-align: center;
@@ -411,7 +424,7 @@
 }
 
 .teacher-file-copy small {
-    color: rgba(231, 238, 252, 0.64);
+    color: var(--si-text-soft);
     font-size: 0.82rem;
     line-height: 1.5;
 }
@@ -424,16 +437,16 @@
 
 .teacher-material-stack {
     display: grid;
-    gap: 16px;
+    gap: 12px;
 }
 
 .teacher-material-card {
-    padding: 20px;
-    border-radius: 22px;
+    padding: 16px 18px;
+    border-radius: 18px;
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02)),
-        rgba(9, 15, 28, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+        color-mix(in srgb, var(--si-panel-soft) 92%, rgba(9, 15, 28, 0.28));
+    border: 1px solid var(--si-border);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
@@ -442,41 +455,47 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
 }
 
 .teacher-material-copy {
     min-width: 0;
 }
 
+.teacher-material-title {
+    font-size: 1.05rem;
+    line-height: 1.3;
+}
+
 .teacher-material-badge {
     display: inline-flex;
     align-items: center;
-    padding: 8px 12px;
+    padding: 6px 11px;
     border-radius: 999px;
-    background: rgba(141, 232, 255, 0.08);
-    border: 1px solid rgba(141, 232, 255, 0.14);
-    color: #9fe8ff;
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
+    background: color-mix(in srgb, var(--si-accent-solid) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--si-accent-solid) 18%, transparent);
+    color: color-mix(in srgb, var(--si-accent-solid) 88%, white 12%);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     white-space: nowrap;
 }
 
 .teacher-material-actions {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
 }
 
 .teacher-action-btn {
     margin-top: 0;
-    min-width: 112px;
+    min-width: 96px;
+    padding: 10px 18px !important;
     text-align: center;
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: var(--si-text) !important;
+    border: 1px solid var(--si-border) !important;
 }
 
 .teacher-delete-btn {
@@ -488,7 +507,7 @@
 .teacher-edit-form {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
 }
 
@@ -497,16 +516,55 @@
 }
 
 .teacher-save-btn {
-    min-width: 104px;
+    min-width: 88px;
+    min-height: 44px;
+    padding: 10px 18px !important;
+    background: var(--si-accent) !important;
+    color: #08111f !important;
+    border: 1px solid color-mix(in srgb, var(--si-accent-solid) 24%, transparent) !important;
+    text-shadow: none !important;
+    font-weight: 800 !important;
 }
 
 .teacher-empty-state {
     padding: 18px;
     border-radius: 18px;
-    border: 1px dashed rgba(255, 255, 255, 0.12);
-    color: rgba(231, 238, 252, 0.68);
+    border: 1px dashed var(--si-border);
+    color: var(--si-text-muted);
     background: rgba(255, 255, 255, 0.04);
     text-align: center;
+}
+
+html[data-theme='cyber'] .teacher-title,
+html[data-theme='cyber'] .teacher-overview-head h2,
+html[data-theme='cyber'] .teacher-section-head h2 {
+    text-shadow: 0 0 22px rgba(252, 238, 10, 0.08);
+}
+
+html[data-theme='cyber'] .teacher-topbar,
+html[data-theme='cyber'] .teacher-overview,
+html[data-theme='cyber'] .teacher-section {
+    border-color: rgba(252, 238, 10, 0.14);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(252, 238, 10, 0.06);
+}
+
+html[data-theme='cyber'] .teacher-primary-btn,
+html[data-theme='cyber'] .teacher-file-pill,
+html[data-theme='cyber'] .teacher-save-btn {
+    color: #111111 !important;
+}
+
+html[data-theme='eclipse'] .teacher-title,
+html[data-theme='eclipse'] .teacher-overview-head h2,
+html[data-theme='eclipse'] .teacher-section-head h2 {
+    color: #fff0f5;
+}
+
+html[data-theme='eclipse'] .teacher-topbar,
+html[data-theme='eclipse'] .teacher-overview,
+html[data-theme='eclipse'] .teacher-section {
+    border-color: rgba(255, 51, 102, 0.14);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 153, 51, 0.05);
 }
 
 @media (max-width: 1100px) {
@@ -514,7 +572,7 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .teacher-grid,
+    .teacher-bottom-row,
     .teacher-topbar {
         grid-template-columns: 1fr;
     }

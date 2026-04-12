@@ -20,7 +20,7 @@
     <script>
       function applyTheme(theme) {
         document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("studyintelTheme_teacher", theme);
+        localStorage.setItem("studyintelTheme", theme);
       }
 
       function openThemeModal() {
@@ -51,11 +51,11 @@
         document.getElementById("si-theme-modal").style.display = "none";
       }
 
-      const savedTheme = localStorage.getItem("studyintelTheme_teacher") || "ocean";
+      const savedTheme = localStorage.getItem("studyintelTheme") || "ocean";
       applyTheme(savedTheme);
 
       window.addEventListener("storage", (event) => {
-        if (event.key === "studyintelTheme_teacher") {
+        if (event.key === "studyintelTheme") {
           document.documentElement.setAttribute("data-theme", event.newValue);
         }
       });
@@ -203,103 +203,103 @@
             </div>
             {% endif %}
           </section>
-        </div>
 
-        <aside class="teacher-side-column">
-          <section class="glass teacher-section teacher-upload-card">
-            <div class="teacher-section-head teacher-section-head-stack">
-              <div>
-                <p class="teacher-section-kicker">Quick Upload</p>
-                <h2>Upload Study Material</h2>
-              </div>
-              <p class="teacher-upload-note">
-                Add notes, PDFs, handouts, and other class files.
-              </p>
-            </div>
-
-            <form
-              action="/upload_material"
-              method="POST"
-              enctype="multipart/form-data"
-              class="teacher-upload-form"
-            >
-              <div class="teacher-upload-banner">
-                <strong>Upload a new classroom resource</strong>
-                <p>Add a clear title and one file so students can find it instantly.</p>
+          <section class="teacher-bottom-row">
+            <section class="glass teacher-section teacher-library-card">
+              <div class="teacher-section-head">
+                <div>
+                  <p class="teacher-section-kicker">Resource Center</p>
+                  <h2>Uploaded Materials</h2>
+                </div>
+                <span class="teacher-inline-stat">{{ total_materials }} items</span>
               </div>
 
-              <label class="teacher-field">
-                <span>Material Title</span>
-                <input type="text" name="title" placeholder="Weekly chemistry notes" required />
-              </label>
-
-              <label class="teacher-field teacher-file-field">
-                <span>Choose File</span>
-                <input
-                  id="teacher-material-file"
-                  type="file"
-                  name="file"
-                  required
-                />
-                <span class="teacher-file-shell">
-                  <span class="teacher-file-pill">Select File</span>
-                  <span class="teacher-file-copy">
-                    <strong id="teacher-file-name">No file selected yet</strong>
-                    <small>PDF, worksheet, slide deck, image, or study note.</small>
-                  </span>
-                </span>
-              </label>
-
-              <button class="btn btn-primary w-100 teacher-upload-btn" type="submit">Upload Material</button>
-            </form>
-          </section>
-
-          <section class="glass teacher-section teacher-library-card">
-            <div class="teacher-section-head">
-              <div>
-                <p class="teacher-section-kicker">Resource Center</p>
-                <h2>Uploaded Materials</h2>
-              </div>
-              <span class="teacher-inline-stat">{{ total_materials }} items</span>
-            </div>
-
-            {% if materials %}
-            <div class="teacher-material-stack">
-              {% for m in materials %}
-              <article class="teacher-material-card">
-                <div class="teacher-material-header">
-                  <div class="teacher-material-copy">
-                    <strong class="teacher-material-title">{{ m.title }}</strong>
-                    <p class="teacher-material-meta">{{ m.filename }}</p>
+              {% if materials %}
+              <div class="teacher-material-stack">
+                {% for m in materials %}
+                <article class="teacher-material-card">
+                  <div class="teacher-material-header">
+                    <div class="teacher-material-copy">
+                      <strong class="teacher-material-title">{{ m.title }}</strong>
+                      <p class="teacher-material-meta">{{ m.filename }}</p>
+                    </div>
+                    <span class="teacher-material-badge">Resource</span>
                   </div>
-                  <span class="teacher-material-badge">Resource</span>
+
+                  <div class="teacher-material-actions">
+                    <a href="/view_material/{{ m.id }}" class="btn teacher-action-btn">View</a>
+                    <a href="/delete_material/{{ m.id }}" class="btn teacher-action-btn teacher-delete-btn">Delete</a>
+                  </div>
+
+                  <form action="/edit_material/{{ m.id }}" method="POST" class="teacher-edit-form">
+                    <input
+                      type="text"
+                      name="title"
+                      placeholder="Rename material"
+                      required
+                      class="teacher-edit-input"
+                    />
+                    <button class="btn teacher-save-btn" type="submit">Save</button>
+                  </form>
+                </article>
+                {% endfor %}
+              </div>
+              {% else %}
+              <div class="teacher-empty-state">
+                Your material library is empty. Upload the first resource to get started.
+              </div>
+              {% endif %}
+            </section>
+
+            <section class="glass teacher-section teacher-upload-card">
+              <div class="teacher-section-head teacher-section-head-stack">
+                <div>
+                  <p class="teacher-section-kicker">Quick Upload</p>
+                  <h2>Upload Study Material</h2>
+                </div>
+                <p class="teacher-upload-note">
+                  Add notes, PDFs, handouts, and other class files.
+                </p>
+              </div>
+
+              <form
+                action="/upload_material"
+                method="POST"
+                enctype="multipart/form-data"
+                class="teacher-upload-form"
+              >
+                <div class="teacher-upload-banner">
+                  <strong>Upload a new classroom resource</strong>
+                  <p>Add a clear title and one file so students can find it instantly.</p>
                 </div>
 
-                <div class="teacher-material-actions">
-                  <a href="/view_material/{{ m.id }}" class="btn teacher-action-btn">View</a>
-                  <a href="/delete_material/{{ m.id }}" class="btn teacher-action-btn teacher-delete-btn">Delete</a>
-                </div>
+                <label class="teacher-field">
+                  <span>Material Title</span>
+                  <input type="text" name="title" placeholder="Weekly chemistry notes" required />
+                </label>
 
-                <form action="/edit_material/{{ m.id }}" method="POST" class="teacher-edit-form">
+                <label class="teacher-field teacher-file-field">
+                  <span>Choose File</span>
                   <input
-                    type="text"
-                    name="title"
-                    placeholder="Rename material"
+                    id="teacher-material-file"
+                    type="file"
+                    name="file"
                     required
-                    class="teacher-edit-input"
                   />
-                  <button class="btn teacher-save-btn" type="submit">Save</button>
-                </form>
-              </article>
-              {% endfor %}
-            </div>
-            {% else %}
-            <div class="teacher-empty-state">
-              Your material library is empty. Upload the first resource to get started.
-            </div>
-            {% endif %}
+                  <span class="teacher-file-shell">
+                    <span class="teacher-file-pill">Select File</span>
+                    <span class="teacher-file-copy">
+                      <strong id="teacher-file-name">No file selected yet</strong>
+                      <small>PDF, worksheet, slide deck, image, or study note.</small>
+                    </span>
+                  </span>
+                </label>
+
+                <button class="btn btn-primary w-100 teacher-upload-btn" type="submit">Upload Material</button>
+              </form>
+            </section>
           </section>
-        </aside>
+        </div>
       </section>
     </main>
 
