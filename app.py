@@ -658,14 +658,20 @@ def teacher_dashboard():
         "SELECT * FROM materials WHERE class_code=? ORDER BY id DESC",
         (session["class_code"],)
         ).fetchall()
+
+    total_minutes = sum((entry["total"] or 0) for entry in leaderboard)
+    top_student = leaderboard[0] if leaderboard else None
     
     return render_template(
         "teacher_dashboard.html",
         students=students,
         leaderboard=leaderboard,
         materials=materials,
+        total_students=len(students),
+        total_materials=len(materials),
+        total_minutes=total_minutes,
+        top_student=top_student,
     )
-
 
 #---------- MATERIAL UPLOAD ---------
 

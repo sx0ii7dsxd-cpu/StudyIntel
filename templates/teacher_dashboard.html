@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Teacher Dashboard</title>
 
     <link
@@ -18,159 +19,300 @@
 
     <script>
       function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('studyintelTheme_teacher', theme);
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("studyintelTheme_teacher", theme);
       }
+
       function openThemeModal() {
-        if(document.getElementById('si-theme-modal')) {
-             document.getElementById('si-theme-modal').style.display = 'flex';
-             return;
+        if (document.getElementById("si-theme-modal")) {
+          document.getElementById("si-theme-modal").style.display = "flex";
+          return;
         }
+
         const modalHtml = `
-          <div id="si-theme-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); z-index:9999; display:flex; align-items:center; justify-content:center;">
-             <div style="background:rgba(20, 20, 25, 0.95); padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 30px 60px rgba(0,0,0,0.8); min-width:300px; text-align:center;">
-                <h3 style="margin-top:0; color:#fff; font-size:1.4rem; font-weight:800;">Select Theme</h3>
-                <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
-                   <button onclick="applyThemeAndClose('ocean')" style="padding:16px; border-radius:12px; border:1px solid #1e9dbf; background:linear-gradient(135deg, rgba(30,157,191,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">🌊 Ocean Neon</button>
-                   <button onclick="applyThemeAndClose('cyber')" style="padding:16px; border-radius:12px; border:1px solid #fcee0a; background:linear-gradient(135deg, rgba(252,238,10,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">⚡ Cyber Glitch</button>
-                   <button onclick="applyThemeAndClose('eclipse')" style="padding:16px; border-radius:12px; border:1px solid #ff3366; background:linear-gradient(135deg, rgba(255,51,102,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">🌇 Sunset Eclipse</button>
-                </div>
-                <button onclick="document.getElementById('si-theme-modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; border-radius:12px; border:none; background:rgba(255,255,255,0.1); color:#ccc; cursor:pointer; font-weight:bold;">Cancel</button>
-             </div>
+          <div id="si-theme-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); z-index:9999; display:flex; align-items:center; justify-content:center; padding:24px;">
+            <div style="background:rgba(20, 20, 25, 0.95); padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 30px 60px rgba(0,0,0,0.8); width:min(360px,100%); text-align:center;">
+              <h3 style="margin-top:0; color:#fff; font-size:1.4rem; font-weight:800;">Choose Theme</h3>
+              <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
+                <button onclick="applyThemeAndClose('ocean')" style="padding:16px; border-radius:12px; border:1px solid #1e9dbf; background:linear-gradient(135deg, rgba(30,157,191,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">Ocean Neon</button>
+                <button onclick="applyThemeAndClose('cyber')" style="padding:16px; border-radius:12px; border:1px solid #fcee0a; background:linear-gradient(135deg, rgba(252,238,10,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">Cyber Glitch</button>
+                <button onclick="applyThemeAndClose('eclipse')" style="padding:16px; border-radius:12px; border:1px solid #ff3366; background:linear-gradient(135deg, rgba(255,51,102,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">Sunset Eclipse</button>
+              </div>
+              <button onclick="document.getElementById('si-theme-modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; border-radius:12px; border:none; background:rgba(255,255,255,0.1); color:#ccc; cursor:pointer; font-weight:bold;">Close</button>
+            </div>
           </div>
         `;
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        document.body.insertAdjacentHTML("beforeend", modalHtml);
       }
+
       function applyThemeAndClose(theme) {
-         applyTheme(theme);
-         document.getElementById('si-theme-modal').style.display = 'none';
+        applyTheme(theme);
+        document.getElementById("si-theme-modal").style.display = "none";
       }
-      const savedTheme = localStorage.getItem('studyintelTheme_teacher') || 'ocean';
+
+      const savedTheme = localStorage.getItem("studyintelTheme_teacher") || "ocean";
       applyTheme(savedTheme);
 
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'studyintelTheme_teacher') {
-          document.documentElement.setAttribute('data-theme', e.newValue);
+      window.addEventListener("storage", (event) => {
+        if (event.key === "studyintelTheme_teacher") {
+          document.documentElement.setAttribute("data-theme", event.newValue);
         }
       });
     </script>
   </head>
 
-  <body>
-    <div class="container">
-      <div class="glass teacher-hero">
-        <div>
-          <p class="teacher-eyebrow">Teacher Workspace</p>
-          <h2>Teacher Dashboard</h2>
-          <p class="teacher-subtitle">
-            Manage your classroom, upload materials, and keep an eye on student progress from one place.
+  <body class="teacher-dashboard-page">
+    <main class="container teacher-shell">
+      <section class="glass teacher-topbar">
+        <div class="teacher-branding">
+          <p class="teacher-kicker">StudyIntel Teacher Suite</p>
+          <h1 class="teacher-title">Control your classroom from one focused workspace.</h1>
+          <p class="teacher-description">
+            Track momentum, keep materials organized, and give students a cleaner learning setup with one dashboard.
           </p>
         </div>
 
-        <div class="teacher-hero-side">
-          <p class="teacher-label">Class Code</p>
-          <h3 class="teacher-class-code">{{ session["class_code"] }}</h3>
-          <p class="teacher-subtitle mb-0">Share this code with students.</p>
-          <div style="display:flex; gap:10px; margin-top:15px; flex-wrap:wrap;">
-            <button onclick="openThemeModal()" class="btn" style="margin-top:0;">🎨 Theme</button>
-            <a href="/logout" class="btn" style="margin-top:0;">Logout</a>
+        <div class="teacher-topbar-panel">
+          <span class="teacher-chip">Class Code</span>
+          <strong class="teacher-class-code">{{ session["class_code"] }}</strong>
+          <p class="teacher-panel-note">Share this code with students when they join your class.</p>
+
+          <div class="teacher-topbar-actions">
+            <button type="button" class="btn teacher-secondary-btn" onclick="openThemeModal()">Theme</button>
+            <a href="/logout" class="btn teacher-primary-btn">Logout</a>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- STUDENTS LIST -->
-      <div class="glass section">
-        <h4>👨‍🎓 Students</h4>
-
-        <div class="student-list">
-          {% for s in students %}
-          <div class="student-item">{{ s.username }}</div>
-          {% endfor %}
+      <section class="glass teacher-overview">
+        <div class="teacher-overview-head">
+          <div class="teacher-overview-copy">
+            <p class="teacher-section-kicker">Class Overview</p>
+            <h2>Everything important at a glance</h2>
+            <p class="teacher-overview-note">Student's progress and uploaded materials.</p>
+          </div>
+          <span class="teacher-inline-stat">{{ session["class_code"] }}</span>
         </div>
-      </div>
 
-      <!-- LEADERBOARD -->
-      <div class="glass section">
-        <h4>🏆 Leaderboard</h4>
-        <div class="leaderboard-list">
-          {% for user in leaderboard %}
-          <div
-            class="leaderboard-card {% if loop.index == 1 %}leaderboard-card-gold{% elif loop.index == 2 %}leaderboard-card-silver{% elif loop.index == 3 %}leaderboard-card-bronze{% endif %}"
-          >
-            <div class="leaderboard-rank-wrap">
-              <div class="leaderboard-rank">
-                {% if loop.index == 1 %}
-                🥇
-                {% elif loop.index == 2 %}
-                🥈
-                {% elif loop.index == 3 %}
-                🥉
-                {% else %}
-                {{ loop.index }}
-                {% endif %}
+        <div class="teacher-overview-grid">
+          <article class="teacher-metric-card">
+            <span class="teacher-metric-label">Students</span>
+            <strong class="teacher-metric-value">{{ total_students }}</strong>
+            <p class="teacher-metric-note">Active learners in this class.</p>
+          </article>
+
+          <article class="teacher-metric-card">
+            <span class="teacher-metric-label">Materials</span>
+            <strong class="teacher-metric-value">{{ total_materials }}</strong>
+            <p class="teacher-metric-note">Ready-to-share resources in your library.</p>
+          </article>
+
+          <article class="teacher-metric-card teacher-metric-highlight">
+            <span class="teacher-metric-label">Top Student</span>
+            <strong class="teacher-metric-value">
+              {% if top_student %}
+              {{ top_student.username }}
+              {% else %}
+              No activity yet
+              {% endif %}
+            </strong>
+            <p class="teacher-metric-note">
+              {% if top_student %}
+              {{ top_student.total }} minutes logged so far.
+              {% else %}
+              This spot updates as soon as students start studying.
+              {% endif %}
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="teacher-grid">
+        <div class="teacher-main-column">
+          <section class="glass teacher-section">
+            <div class="teacher-section-head">
+              <div>
+                <p class="teacher-section-kicker">Classroom Snapshot</p>
+                <h2>Students</h2>
               </div>
+              <span class="teacher-inline-stat">{{ total_students }} total</span>
             </div>
 
-            <div class="leaderboard-name-wrap">
-              <div class="leaderboard-name">{{ user.username }}</div>
+            {% if students %}
+            <div class="teacher-student-grid">
+              {% for s in students %}
+              <article class="teacher-student-card">
+                <div class="teacher-student-avatar">{{ s.username[0]|upper }}</div>
+                <div>
+                  <strong>{{ s.username }}</strong>
+                </div>
+              </article>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="teacher-empty-state">
+              No students have joined this class yet.
+            </div>
+            {% endif %}
+          </section>
+
+          <section class="glass teacher-section">
+            <div class="teacher-section-head">
+              <div>
+                <p class="teacher-section-kicker">Study Momentum</p>
+                <h2>Leaderboard</h2>
+              </div>
+              <span class="teacher-inline-stat">Sorted by study time</span>
             </div>
 
-            <div class="leaderboard-minutes-wrap">
-              <div class="leaderboard-minutes">{{ user.total }}</div>
-              <div class="leaderboard-minutes-label">minutes</div>
+            {% if leaderboard %}
+            <div class="leaderboard-list teacher-leaderboard-list">
+              {% for user in leaderboard %}
+              <div
+                class="leaderboard-card {% if loop.index == 1 %}leaderboard-card-gold{% elif loop.index == 2 %}leaderboard-card-silver{% elif loop.index == 3 %}leaderboard-card-bronze{% endif %}"
+              >
+                <div class="leaderboard-rank-wrap">
+                  <div class="leaderboard-rank">
+                    {% if loop.index == 1 %}
+                    #1
+                    {% elif loop.index == 2 %}
+                    #2
+                    {% elif loop.index == 3 %}
+                    #3
+                    {% else %}
+                    #{{ loop.index }}
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="leaderboard-name-wrap">
+                  <div class="leaderboard-name">{{ user.username }}</div>
+                </div>
+
+                <div class="leaderboard-minutes-wrap">
+                  <div class="leaderboard-minutes">{{ user.total }}</div>
+                  <div class="leaderboard-minutes-label">minutes</div>
+                </div>
+              </div>
+              {% endfor %}
             </div>
-          </div>
-          {% endfor %}
+            {% else %}
+            <div class="teacher-empty-state">
+              Leaderboard data will appear once students log study sessions.
+            </div>
+            {% endif %}
+          </section>
         </div>
-      </div>
 
-      <!----------- UPLOAD MATERIAL ----------- -->
+        <aside class="teacher-side-column">
+          <section class="glass teacher-section teacher-upload-card">
+            <div class="teacher-section-head teacher-section-head-stack">
+              <div>
+                <p class="teacher-section-kicker">Quick Upload</p>
+                <h2>Upload Study Material</h2>
+              </div>
+              <p class="teacher-upload-note">
+                Add notes, PDFs, handouts, and other class files.
+              </p>
+            </div>
 
-      <div class="glass section">
-        <h4>📂 Upload Study Material</h4>
+            <form
+              action="/upload_material"
+              method="POST"
+              enctype="multipart/form-data"
+              class="teacher-upload-form"
+            >
+              <div class="teacher-upload-banner">
+                <strong>Upload a new classroom resource</strong>
+                <p>Add a clear title and one file so students can find it instantly.</p>
+              </div>
 
-        <form
-          action="/upload_material"
-          method="POST"
-          enctype="multipart/form-data"
-        >
-          <input type="text" name="title" placeholder="Enter title" required />
+              <label class="teacher-field">
+                <span>Material Title</span>
+                <input type="text" name="title" placeholder="Weekly chemistry notes" required />
+              </label>
 
-          <input type="file" name="file" required />
-
-          <button class="btn">Upload</button>
-        </form>
-      </div>
-      <!-- ---------- MATERIAL LIST  ---------- -->
-
-      <div class="glass section">
-        <h4>📚 Uploaded Materials</h4>
-
-        <div class="student-list teacher-material-list">
-          {% for m in materials %}
-          <div class="student-item teacher-material-row">
-            <span class="teacher-material-name">{{ m.title }}</span>
-
-            <div class="teacher-material-actions">
-              <a href="/view_material/{{ m.id }}" class="btn teacher-action-btn">View</a>
-
-              <a href="/delete_material/{{ m.id }}" class="btn teacher-action-btn teacher-delete-btn">Delete</a>
-
-              <form action="/edit_material/{{ m.id }}" method="POST" class="teacher-edit-form">
+              <label class="teacher-field teacher-file-field">
+                <span>Choose File</span>
                 <input
-                  type="text"
-                  name="title"
-                  placeholder="Edit"
+                  id="teacher-material-file"
+                  type="file"
+                  name="file"
                   required
-                  class="teacher-edit-input"
                 />
-                <button class="btn teacher-action-btn">Save</button>
-              </form>
+                <span class="teacher-file-shell">
+                  <span class="teacher-file-pill">Select File</span>
+                  <span class="teacher-file-copy">
+                    <strong id="teacher-file-name">No file selected yet</strong>
+                    <small>PDF, worksheet, slide deck, image, or study note.</small>
+                  </span>
+                </span>
+              </label>
+
+              <button class="btn btn-primary w-100 teacher-upload-btn" type="submit">Upload Material</button>
+            </form>
+          </section>
+
+          <section class="glass teacher-section teacher-library-card">
+            <div class="teacher-section-head">
+              <div>
+                <p class="teacher-section-kicker">Resource Center</p>
+                <h2>Uploaded Materials</h2>
+              </div>
+              <span class="teacher-inline-stat">{{ total_materials }} items</span>
             </div>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
+
+            {% if materials %}
+            <div class="teacher-material-stack">
+              {% for m in materials %}
+              <article class="teacher-material-card">
+                <div class="teacher-material-header">
+                  <div class="teacher-material-copy">
+                    <strong class="teacher-material-title">{{ m.title }}</strong>
+                    <p class="teacher-material-meta">{{ m.filename }}</p>
+                  </div>
+                  <span class="teacher-material-badge">Resource</span>
+                </div>
+
+                <div class="teacher-material-actions">
+                  <a href="/view_material/{{ m.id }}" class="btn teacher-action-btn">View</a>
+                  <a href="/delete_material/{{ m.id }}" class="btn teacher-action-btn teacher-delete-btn">Delete</a>
+                </div>
+
+                <form action="/edit_material/{{ m.id }}" method="POST" class="teacher-edit-form">
+                  <input
+                    type="text"
+                    name="title"
+                    placeholder="Rename material"
+                    required
+                    class="teacher-edit-input"
+                  />
+                  <button class="btn teacher-save-btn" type="submit">Save</button>
+                </form>
+              </article>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="teacher-empty-state">
+              Your material library is empty. Upload the first resource to get started.
+            </div>
+            {% endif %}
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const materialFileInput = document.getElementById("teacher-material-file");
+      const materialFileName = document.getElementById("teacher-file-name");
+
+      if (materialFileInput && materialFileName) {
+        materialFileInput.addEventListener("change", () => {
+          const selectedFile = materialFileInput.files && materialFileInput.files[0];
+          materialFileName.textContent = selectedFile ? selectedFile.name : "No file selected yet";
+        });
+      }
+    </script>
   </body>
 </html>

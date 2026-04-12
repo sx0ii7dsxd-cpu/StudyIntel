@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Login</title>
+    <title>Student Login</title>
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -14,34 +14,66 @@
     />
   </head>
 
-  <body class="auth-page d-flex justify-content-center align-items-center">
-    <div class="card glass auth-card auth-shell">
-      <p class="auth-eyebrow">StudyIntel</p>
-      <h3 class="auth-title">Student Login</h3>
-      <p class="auth-subtitle">Pick up your study flow right where you left it.</p>
+  <body class="auth-page teacher-auth-page teacher-auth-page-center">
+    <main class="teacher-auth-layout">
+      <section class="teacher-auth-copy">
+        <p class="teacher-auth-kicker">Student Access</p>
+        <h1>Step back into your study rhythm without any extra friction.</h1>
+        <p class="teacher-auth-text">
+          Log in to continue your sessions, check progress, and stay connected with your class resources.
+        </p>
 
-      <form method="POST">
-        <input
-          class="form-control mb-3"
-          name="username"
-          placeholder="Username"
-          required
-        />
-        <input
-          class="form-control mb-3"
-          name="password"
-          type="password"
-          placeholder="Password"
-          required
-        />
+        <div class="teacher-auth-highlights">
+          <article class="teacher-auth-highlight">
+            <strong>Resume fast</strong>
+            <span>Pick up your learning flow from the moment you left off.</span>
+          </article>
+          <article class="teacher-auth-highlight">
+            <strong>Track progress</strong>
+            <span>Stay aware of study time, goals, and class momentum.</span>
+          </article>
+          <article class="teacher-auth-highlight">
+            <strong>Stay connected</strong>
+            <span>Access materials and class features from one place.</span>
+          </article>
+        </div>
+      </section>
 
-        <button class="btn btn-primary w-100">Login</button>
-      </form>
+      <section class="card glass auth-shell teacher-auth-card">
+        <div class="teacher-auth-card-head">
+          <p class="auth-eyebrow">StudyIntel</p>
+        </div>
 
-      <div class="auth-links">
-        <a href="/register">Register</a> |
-        <a href="/teacher_login">Teacher Login</a>
-      </div>
-    </div>
+        <h2 class="auth-title teacher-auth-title">Student Login</h2>
+        <p class="auth-subtitle teacher-auth-subtitle">
+          Sign in and continue learning with your class.
+        </p>
+
+        <form method="POST" class="teacher-auth-form">
+          <label class="teacher-field">
+            <span>Username</span>
+            <input class="form-control" name="username" placeholder="Enter your username" required />
+          </label>
+
+          <label class="teacher-field">
+            <span>Password</span>
+            <input
+              class="form-control"
+              name="password"
+              type="password"
+              placeholder="Enter your password"
+              required
+            />
+          </label>
+
+          <button class="btn btn-primary w-100" type="submit">Enter Student Dashboard</button>
+        </form>
+
+        <div class="auth-links teacher-auth-links">
+          <a href="/register">Create Student Account</a>
+          <a href="/teacher_login">Teacher Login</a>
+        </div>
+      </section>
+    </main>
   </body>
 </html>

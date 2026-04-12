@@ -201,7 +201,8 @@ button:focus-visible,
     min-height: 100vh;
     padding: 24px;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .auth-card {
@@ -210,6 +211,179 @@ button:focus-visible,
 
 .teacher-register-card {
     width: min(520px, 100%);
+}
+
+.teacher-auth-page {
+    padding: 32px 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.teacher-auth-page-center {
+    align-items: center;
+}
+
+.teacher-auth-page::before {
+    width: 380px;
+    height: 380px;
+    top: -100px;
+    left: -110px;
+    background: radial-gradient(circle, rgba(141, 232, 255, 0.18), transparent 68%);
+}
+
+.teacher-auth-page::after {
+    width: 420px;
+    height: 420px;
+    right: -120px;
+    bottom: -120px;
+    background: radial-gradient(circle, rgba(61, 220, 151, 0.18), transparent 68%);
+}
+
+.teacher-auth-layout {
+    width: min(1180px, 100%);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(380px, 460px);
+    gap: 28px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.teacher-auth-layout-wide {
+    grid-template-columns: minmax(0, 0.95fr) minmax(460px, 620px);
+}
+
+.teacher-auth-copy {
+    padding: 18px 8px;
+}
+
+.teacher-auth-kicker {
+    margin: 0 0 14px;
+    color: #8de8ff;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+}
+
+.teacher-auth-copy h1 {
+    margin: 0;
+    max-width: 11ch;
+    font-size: clamp(2.7rem, 6vw, 5rem);
+    line-height: 0.98;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+}
+
+.teacher-auth-text {
+    max-width: 58ch;
+    margin: 20px 0 0;
+    color: rgba(231, 238, 252, 0.78);
+    line-height: 1.75;
+    font-size: 1.02rem;
+}
+
+.teacher-auth-highlights {
+    display: grid;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.teacher-auth-highlight {
+    display: grid;
+    gap: 6px;
+    padding: 18px 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.18);
+}
+
+.teacher-auth-highlight strong {
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.teacher-auth-highlight span {
+    color: rgba(231, 238, 252, 0.72);
+    line-height: 1.6;
+}
+
+.teacher-auth-card {
+    width: 100%;
+    padding: 30px !important;
+}
+
+.teacher-auth-card-wide {
+    max-width: 620px;
+}
+
+.teacher-auth-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.teacher-theme-link {
+    padding: 0 !important;
+    background: transparent !important;
+    color: var(--si-text-muted) !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+}
+
+.teacher-theme-link:hover {
+    color: #ffffff !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.teacher-auth-title,
+.teacher-auth-subtitle {
+    text-align: left;
+}
+
+.teacher-auth-title {
+    margin-top: 8px;
+}
+
+.teacher-auth-form,
+.teacher-register-form {
+    display: grid;
+    gap: 16px;
+}
+
+.teacher-auth-form .btn,
+.teacher-register-form .btn {
+    margin-top: 4px;
+}
+
+.teacher-auth-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    text-align: left;
+}
+
+.teacher-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.teacher-field {
+    display: grid;
+    gap: 8px;
+}
+
+.teacher-field span {
+    color: rgba(231, 238, 252, 0.82);
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 @keyframes floatBlob1 {
@@ -917,6 +1091,39 @@ select:focus,
   transform: translateY(-2px);
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
   border-color: rgba(255, 255, 255, 0.16);
+}
+
+@media (max-width: 980px) {
+    .teacher-auth-layout,
+    .teacher-auth-layout-wide {
+        grid-template-columns: 1fr;
+    }
+
+    .teacher-auth-copy {
+        padding: 0;
+    }
+
+    .teacher-auth-copy h1 {
+        max-width: 14ch;
+    }
+}
+
+@media (max-width: 640px) {
+    .teacher-auth-page {
+        padding: 18px;
+    }
+
+    .teacher-auth-card {
+        padding: 24px !important;
+    }
+
+    .teacher-auth-links {
+        flex-direction: column;
+    }
+
+    .teacher-form-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .studyai-popup-text {

@@ -1,83 +1,108 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Teacher Register</title>
 
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script>
-      function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('studyintelTheme_teacher', theme);
-      }
-      function openThemeModal() {
-        if(document.getElementById('si-theme-modal')) {
-             document.getElementById('si-theme-modal').style.display = 'flex';
-             return;
-        }
-        const modalHtml = `
-          <div id="si-theme-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); z-index:9999; display:flex; align-items:center; justify-content:center;">
-             <div style="background:rgba(20, 20, 25, 0.95); padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 30px 60px rgba(0,0,0,0.8); min-width:300px; text-align:center;">
-                <h3 style="margin-top:0; color:#fff; font-size:1.4rem; font-weight:800;">Select Theme</h3>
-                <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
-                   <button onclick="applyThemeAndClose('ocean')" style="padding:16px; border-radius:12px; border:1px solid #1e9dbf; background:linear-gradient(135deg, rgba(30,157,191,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">🌊 Ocean Neon</button>
-                   <button onclick="applyThemeAndClose('cyber')" style="padding:16px; border-radius:12px; border:1px solid #fcee0a; background:linear-gradient(135deg, rgba(252,238,10,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">⚡ Cyber Glitch</button>
-                   <button onclick="applyThemeAndClose('eclipse')" style="padding:16px; border-radius:12px; border:1px solid #ff3366; background:linear-gradient(135deg, rgba(255,51,102,0.2), transparent); color:#fff; font-weight:bold; cursor:pointer; text-align:left;">🌇 Sunset Eclipse</button>
-                </div>
-                <button onclick="document.getElementById('si-theme-modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; border-radius:12px; border:none; background:rgba(255,255,255,0.1); color:#ccc; cursor:pointer; font-weight:bold;">Cancel</button>
-             </div>
-          </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-      }
-      function applyThemeAndClose(theme) {
-         applyTheme(theme);
-         document.getElementById('si-theme-modal').style.display = 'none';
-      }
-      const savedTheme = localStorage.getItem('studyintelTheme_teacher') || 'ocean';
-      applyTheme(savedTheme);
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
 
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'studyintelTheme_teacher') {
-          document.documentElement.setAttribute('data-theme', e.newValue);
-        }
-      });
-    </script>
-</head>
+  <body class="auth-page teacher-auth-page teacher-auth-page-register">
+    <main class="teacher-auth-layout teacher-auth-layout-wide">
+      <section class="teacher-auth-copy">
+        <p class="teacher-auth-kicker">Teacher Onboarding</p>
+        <h1>Set up your class once and start teaching with a cleaner system.</h1>
+        <p class="teacher-auth-text">
+          Create your teacher account, get a class code instantly, and bring your students into one organized workspace.
+        </p>
 
-<body class="auth-page d-flex justify-content-center align-items-center">
-    <div class="card glass teacher-register-card auth-shell">
-        <p class="auth-eyebrow">StudyIntel</p>
-        <h3 class="auth-title">Teacher Register</h3>
-        <p class="auth-subtitle">Create your teaching workspace and invite students with one class code.</p>
+        <div class="teacher-auth-highlights">
+          <article class="teacher-auth-highlight">
+            <strong>Fast setup</strong>
+            <span>Create your teacher profile and enter the dashboard right away.</span>
+          </article>
+          <article class="teacher-auth-highlight">
+            <strong>Single class code</strong>
+            <span>Students can join your class using one shared code.</span>
+          </article>
+          <article class="teacher-auth-highlight">
+            <strong>Central resource hub</strong>
+            <span>Upload files and manage learning materials from one place.</span>
+          </article>
+        </div>
+      </section>
 
-        <form method="POST">
-            <input class="form-control mb-2" name="username" placeholder="Username" required>
+      <section class="card glass auth-shell teacher-auth-card teacher-auth-card-wide">
+        <div class="teacher-auth-card-head">
+          <p class="auth-eyebrow">StudyIntel</p>
+        </div>
+
+        <h2 class="auth-title teacher-auth-title">Teacher Register</h2>
+        <p class="auth-subtitle teacher-auth-subtitle">
+          Build your teaching workspace and generate a class code.
+        </p>
+
+        <form method="POST" class="teacher-register-form">
+          <label class="teacher-field">
+            <span>Username</span>
+            <input class="form-control" name="username" placeholder="Choose a username" required />
+          </label>
+
+          <label class="teacher-field">
+            <span>Password</span>
             <input
-                class="form-control mb-2"
-                name="password"
-                type="password"
-                placeholder="Password"
-                required
-            >
+              class="form-control"
+              name="password"
+              type="password"
+              placeholder="Create a password"
+              required
+            />
+          </label>
 
-            <input class="form-control mb-2" name="full_name" placeholder="Full Name" required>
-            <input class="form-control mb-2" name="email" placeholder="Email" required>
-            <input class="form-control mb-2" name="phone" placeholder="Phone" required>
-            <input class="form-control mb-2" name="address" placeholder="Address" required>
-            <input class="form-control mb-2" name="aadhaar" placeholder="Aadhaar" required>
+          <div class="teacher-form-grid">
+            <label class="teacher-field">
+              <span>Full Name</span>
+              <input class="form-control" name="full_name" placeholder="Enter full name" required />
+            </label>
 
-            <input class="form-control mb-3" name="secret_code" placeholder="Secret Code" required>
+            <label class="teacher-field">
+              <span>Email</span>
+              <input class="form-control" name="email" placeholder="Enter email" required />
+            </label>
 
-            <button class="btn btn-primary w-100">Register</button>
+            <label class="teacher-field">
+              <span>Phone</span>
+              <input class="form-control" name="phone" placeholder="Enter phone number" required />
+            </label>
+
+            <label class="teacher-field">
+              <span>Aadhaar</span>
+              <input class="form-control" name="aadhaar" placeholder="Enter Aadhaar number" required />
+            </label>
+          </div>
+
+          <label class="teacher-field">
+            <span>Address</span>
+            <input class="form-control" name="address" placeholder="Enter address" required />
+          </label>
+
+          <label class="teacher-field">
+            <span>Secret Code</span>
+            <input class="form-control" name="secret_code" placeholder="Enter your secret code" required />
+          </label>
+
+          <button class="btn btn-primary w-100" type="submit">Create Teacher Account</button>
         </form>
 
-        <div class="auth-links">
-            <a href="/login">Back</a>
+        <div class="auth-links teacher-auth-links">
+          <a href="/teacher_login">Back to Teacher Login</a>
+          <a href="/login">Student Login</a>
         </div>
-    </div>
-</body>
+      </section>
+    </main>
+  </body>
 </html>
