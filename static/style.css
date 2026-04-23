@@ -1013,6 +1013,7 @@ select:focus,
 .floating-timer {
   position: fixed;
   right: 24px;
+  left: auto;
   bottom: 24px;
   width: 160px;
   padding: 16px;
@@ -1024,13 +1025,12 @@ select:focus,
   cursor: grab;
   user-select: none;
   text-align: center;
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
   backdrop-filter: var(--si-blur);
   -webkit-backdrop-filter: var(--si-blur);
 }
 
 .floating-timer:hover {
-  transform: translateY(-2px);
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
   border-color: rgba(255, 255, 255, 0.16);
 }
@@ -1065,6 +1065,7 @@ select:focus,
   color: var(--si-text);
   font-size: 0.88rem !important;
   line-height: 1;
+  transition: all 0.3s ease;
 }
 
 .floating-timer-btn-primary {
@@ -1074,9 +1075,10 @@ select:focus,
 
 .studyai-popup {
   position: fixed;
-  left: 20px;
-  bottom: 20px;
-  width: min(300px, calc(100vw - 32px));
+  left: 24px;
+  right: auto;
+  bottom: 24px;
+  width: 260px;
   padding: 16px 18px;
   border-radius: 18px;
   background: rgba(15, 23, 42, 0.94);
@@ -1084,11 +1086,11 @@ select:focus,
   box-shadow: var(--si-shadow);
   backdrop-filter: blur(16px);
   z-index: 999;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
 }
 
 .studyai-popup:hover {
-  transform: translateY(-2px);
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
   border-color: rgba(255, 255, 255, 0.16);
 }
@@ -1136,6 +1138,7 @@ select:focus,
 .studyai-popup-btn {
   width: 100%;
   font-weight: 700;
+  transition: all 0.3s ease;
 }
 
 .study-page-shell {
@@ -1379,14 +1382,16 @@ select:focus,
 
   .floating-timer {
     right: 12px;
+    left: auto;
     bottom: 12px;
     width: 148px;
   }
 
   .studyai-popup {
     left: 12px;
+    right: auto;
     bottom: 12px;
-    width: min(260px, calc(100vw - 96px));
+    width: 240px;
   }
 
   .study-calendar-weekdays,
