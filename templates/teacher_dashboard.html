@@ -12,10 +12,6 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='dashboard.css') }}"
-    />
 
     <script>
       function applyTheme(theme) {
@@ -63,61 +59,61 @@
   </head>
 
   <body class="teacher-dashboard-page">
-    <main class="container teacher-shell">
-      <section class="glass teacher-topbar">
-        <div class="teacher-branding">
-          <p class="teacher-kicker">StudyIntel Teacher Suite</p>
-          <h1 class="teacher-title">Control your classroom from one focused workspace.</h1>
-          <p class="teacher-description">
+    <main class="container dashboard-page-shell">
+      <section class="dashboard-hero-block dashboard-hero-split glass">
+        <div class="dashboard-branding">
+          <p class="dashboard-kicker">StudyIntel Teacher Suite</p>
+          <h1 class="dashboard-title-large">Control your classroom from one focused workspace.</h1>
+          <p class="dashboard-desc-muted">
             Track momentum, keep materials organized, and give students a cleaner learning setup with one dashboard.
           </p>
         </div>
 
-        <div class="teacher-topbar-panel">
-          <span class="teacher-chip">Class Code</span>
-          <strong class="teacher-class-code">{{ session["class_code"] }}</strong>
+        <div class="dashboard-panel-glass">
+          <span class="dashboard-chip">Class Code</span>
+          <strong class="dashboard-accent-highlight">{{ session["class_code"] }}</strong>
           <p class="teacher-panel-note">Share this code with students when they join your class.</p>
 
-          <div class="teacher-topbar-actions">
-            <button type="button" class="btn teacher-secondary-btn" onclick="openThemeModal()">Theme</button>
-            <a href="/logout" class="btn teacher-primary-btn">Logout</a>
+          <div class="dashboard-hero-block-actions">
+            <button type="button" class="btn btn-premium-secondary" onclick="openThemeModal()">Theme</button>
+            <a href="/logout" class="btn btn-premium-primary">Logout</a>
           </div>
         </div>
       </section>
 
-      <section class="glass teacher-overview">
-        <div class="teacher-overview-head">
-          <div class="teacher-overview-copy">
-            <p class="teacher-section-kicker">Class Overview</p>
+      <section class="dashboard-overview-block glass">
+        <div class="dashboard-overview-block-head">
+          <div class="dashboard-overview-block-copy">
+            <p class="dashboard-section-kicker">Class Overview</p>
             <h2>Everything important at a glance</h2>
-            <p class="teacher-overview-note">Student's progress and uploaded materials.</p>
+            <p class="dashboard-overview-block-note">Student's progress and uploaded materials.</p>
           </div>
-          <span class="teacher-inline-stat">{{ session["class_code"] }}</span>
+          <span class="dashboard-inline-stat">{{ session["class_code"] }}</span>
         </div>
 
-        <div class="teacher-overview-grid">
-          <article class="teacher-metric-card">
-            <span class="teacher-metric-label">Students</span>
-            <strong class="teacher-metric-value">{{ total_students }}</strong>
-            <p class="teacher-metric-note">Active learners in this class.</p>
+        <div class="metric-grid-shared">
+          <article class="metric-card-premium">
+            <span class="metric-label-small">Students</span>
+            <strong class="metric-value-large">{{ total_students }}</strong>
+            <p class="dashboard-metric-note">Active learners in this class.</p>
           </article>
 
-          <article class="teacher-metric-card">
-            <span class="teacher-metric-label">Materials</span>
-            <strong class="teacher-metric-value">{{ total_materials }}</strong>
-            <p class="teacher-metric-note">Ready-to-share resources in your library.</p>
+          <article class="metric-card-premium">
+            <span class="metric-label-small">Materials</span>
+            <strong class="metric-value-large">{{ total_materials }}</strong>
+            <p class="dashboard-metric-note">Ready-to-share resources in your library.</p>
           </article>
 
-          <article class="teacher-metric-card teacher-metric-highlight">
-            <span class="teacher-metric-label">Top Student</span>
-            <strong class="teacher-metric-value">
+          <article class="metric-card-premium metric-card-highlight">
+            <span class="metric-label-small">Top Student</span>
+            <strong class="metric-value-large">
               {% if top_student %}
               {{ top_student.username }}
               {% else %}
               No activity yet
               {% endif %}
             </strong>
-            <p class="teacher-metric-note">
+            <p class="dashboard-metric-note">
               {% if top_student %}
               {{ top_student.total }} minutes logged so far.
               {% else %}
@@ -128,22 +124,22 @@
         </div>
       </section>
 
-      <section class="teacher-grid">
-        <div class="teacher-main-column">
-          <section class="glass teacher-section">
-            <div class="teacher-section-head">
+      <section class="dashboard-grid">
+        <div class="dashboard-main-column">
+          <section class="glass dashboard-section-card">
+            <div class="dashboard-section-card-head">
               <div>
-                <p class="teacher-section-kicker">Classroom Snapshot</p>
+                <p class="dashboard-section-kicker">Classroom Snapshot</p>
                 <h2>Students</h2>
               </div>
-              <span class="teacher-inline-stat">{{ total_students }} total</span>
+              <span class="dashboard-inline-stat">{{ total_students }} total</span>
             </div>
 
             {% if students %}
-            <div class="teacher-student-grid">
+            <div class="dashboard-student-grid">
               {% for s in students %}
-              <article class="teacher-student-card">
-                <div class="teacher-student-avatar">{{ s.username[0]|upper }}</div>
+              <article class="dashboard-student-card">
+                <div class="dashboard-student-avatar">{{ s.username[0]|upper }}</div>
                 <div>
                   <strong>{{ s.username }}</strong>
                 </div>
@@ -151,23 +147,23 @@
               {% endfor %}
             </div>
             {% else %}
-            <div class="teacher-empty-state">
+            <div class="dashboard-empty-state">
               No students have joined this class yet.
             </div>
             {% endif %}
           </section>
 
-          <section class="glass teacher-section">
-            <div class="teacher-section-head">
+          <section class="glass dashboard-section-card">
+            <div class="dashboard-section-card-head">
               <div>
-                <p class="teacher-section-kicker">Study Momentum</p>
+                <p class="dashboard-section-kicker">Study Momentum</p>
                 <h2>Leaderboard</h2>
               </div>
-              <span class="teacher-inline-stat">Sorted by study time</span>
+              <span class="dashboard-inline-stat">Sorted by study time</span>
             </div>
 
             {% if leaderboard %}
-            <div class="leaderboard-list teacher-leaderboard-list">
+            <div class="leaderboard-list dashboard-leaderboard-list">
               {% for user in leaderboard %}
               <div
                 class="leaderboard-card {% if loop.index == 1 %}leaderboard-card-gold{% elif loop.index == 2 %}leaderboard-card-silver{% elif loop.index == 3 %}leaderboard-card-bronze{% endif %}"
@@ -198,66 +194,66 @@
               {% endfor %}
             </div>
             {% else %}
-            <div class="teacher-empty-state">
+            <div class="dashboard-empty-state">
               Leaderboard data will appear once students log study sessions.
             </div>
             {% endif %}
           </section>
 
-          <section class="teacher-bottom-row">
-            <section class="glass teacher-section teacher-library-card">
-              <div class="teacher-section-head">
+          <section class="dashboard-bottom-row">
+            <section class="glass dashboard-section-card dashboard-library-card">
+              <div class="dashboard-section-card-head">
                 <div>
-                  <p class="teacher-section-kicker">Resource Center</p>
+                  <p class="dashboard-section-kicker">Resource Center</p>
                   <h2>Uploaded Materials</h2>
                 </div>
-                <span class="teacher-inline-stat">{{ total_materials }} items</span>
+                <span class="dashboard-inline-stat">{{ total_materials }} items</span>
               </div>
 
               {% if materials %}
-              <div class="teacher-material-stack">
+              <div class="dashboard-material-stack">
                 {% for m in materials %}
-                <article class="teacher-material-card">
-                  <div class="teacher-material-header">
-                    <div class="teacher-material-copy">
-                      <strong class="teacher-material-title">{{ m.title }}</strong>
-                      <p class="teacher-material-meta">{{ m.filename }}</p>
+                <article class="dashboard-material-card">
+                  <div class="dashboard-material-header">
+                    <div class="dashboard-material-copy">
+                      <strong class="dashboard-material-title">{{ m.title }}</strong>
+                      <p class="dashboard-material-meta">{{ m.filename }}</p>
                     </div>
-                    <span class="teacher-material-badge">Resource</span>
+                    <span class="dashboard-material-badge">Resource</span>
                   </div>
 
-                  <div class="teacher-material-actions">
-                    <a href="/view_material/{{ m.id }}" class="btn teacher-action-btn">View</a>
-                    <a href="/delete_material/{{ m.id }}" class="btn teacher-action-btn teacher-delete-btn">Delete</a>
+                  <div class="dashboard-material-actions">
+                    <a href="/view_material/{{ m.id }}" class="btn dashboard-action-btn">View</a>
+                    <a href="/delete_material/{{ m.id }}" class="btn dashboard-action-btn dashboard-delete-btn">Delete</a>
                   </div>
 
-                  <form action="/edit_material/{{ m.id }}" method="POST" class="teacher-edit-form">
+                  <form action="/edit_material/{{ m.id }}" method="POST" class="dashboard-edit-form">
                     <input
                       type="text"
                       name="title"
                       placeholder="Rename material"
                       required
-                      class="teacher-edit-input"
+                      class="dashboard-edit-input"
                     />
-                    <button class="btn teacher-save-btn" type="submit">Save</button>
+                    <button class="btn dashboard-save-btn" type="submit">Save</button>
                   </form>
                 </article>
                 {% endfor %}
               </div>
               {% else %}
-              <div class="teacher-empty-state">
+              <div class="dashboard-empty-state">
                 Your material library is empty. Upload the first resource to get started.
               </div>
               {% endif %}
             </section>
 
-            <section class="glass teacher-section teacher-upload-card">
-              <div class="teacher-section-head teacher-section-head-stack">
+            <section class="glass dashboard-section-card dashboard-upload-card">
+              <div class="dashboard-section-card-head dashboard-section-card-head-stack">
                 <div>
-                  <p class="teacher-section-kicker">Quick Upload</p>
+                  <p class="dashboard-section-kicker">Quick Upload</p>
                   <h2>Upload Study Material</h2>
                 </div>
-                <p class="teacher-upload-note">
+                <p class="dashboard-upload-note">
                   Add notes, PDFs, handouts, and other class files.
                 </p>
               </div>
@@ -266,19 +262,19 @@
                 action="/upload_material"
                 method="POST"
                 enctype="multipart/form-data"
-                class="teacher-upload-form"
+                class="dashboard-upload-form"
               >
-                <div class="teacher-upload-banner">
+                <div class="dashboard-upload-banner">
                   <strong>Upload a new classroom resource</strong>
                   <p>Add a clear title and one file so students can find it instantly.</p>
                 </div>
 
-                <label class="teacher-field">
+                <label class="dashboard-field">
                   <span>Material Title</span>
                   <input type="text" name="title" placeholder="Weekly chemistry notes" required />
                 </label>
 
-                <label class="teacher-field teacher-file-field">
+                <label class="dashboard-field dashboard-file-field">
                   <span>Choose File</span>
                   <input
                     id="teacher-material-file"
@@ -286,16 +282,16 @@
                     name="file"
                     required
                   />
-                  <span class="teacher-file-shell">
-                    <span class="teacher-file-pill">Select File</span>
-                    <span class="teacher-file-copy">
+                  <span class="dashboard-file-shell">
+                    <span class="dashboard-file-pill">Select File</span>
+                    <span class="dashboard-file-copy">
                       <strong id="teacher-file-name">No file selected yet</strong>
                       <small>PDF, worksheet, slide deck, image, or study note.</small>
                     </span>
                   </span>
                 </label>
 
-                <button class="btn btn-primary w-100 teacher-upload-btn" type="submit">Upload Material</button>
+                <button class="btn btn-primary w-100 dashboard-upload-btn" type="submit">Upload Material</button>
               </form>
             </section>
           </section>

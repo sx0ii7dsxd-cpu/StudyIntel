@@ -1,35 +1,35 @@
 {% extends "base_timer.html" %} {% block title %}Dashboard{% endblock %} {% block
 content %}
 
-<div class="container mt-4 dashboard-shell">
-  <section class="dashboard-hero glass">
+<div class="container dashboard-page-shell">
+  <section class="dashboard-hero-block dashboard-hero-split glass">
     <div class="dashboard-hero-copy">
       <p class="dashboard-kicker">Student Dashboard</p>
-      <h1 class="dashboard-title">Build a stronger study streak, one focused day at a time.</h1>
-      <p class="dashboard-subtitle">
+      <h1 class="dashboard-title-large">Build a stronger study streak, one focused day at a time.</h1>
+      <p class="dashboard-desc-muted">
         Track your study minutes, jump into sessions fast, and stay connected with your class from one place.
       </p>
 
       <div class="dashboard-hero-actions">
-        <a href="/study" class="btn btn-primary">Start Studying</a>
-        <a href="{{ url_for('music_player') }}" target="StudyIntelMusicPlayer" class="btn btn-light">
+        <a href="/study" class="btn btn-premium-primary">Start Studying</a>
+        <a href="{{ url_for('music_player') }}" target="StudyIntelMusicPlayer" class="btn btn-premium-secondary">
           Focus Zone
         </a>
       </div>
     </div>
 
-    <div class="dashboard-hero-stats">
-      <div class="dashboard-stat-card">
-        <span class="dashboard-stat-label">Class Code</span>
-        <strong class="dashboard-stat-value dashboard-stat-code">{{ session["class_code"] }}</strong>
+    <div class="dashboard-panel-glass">
+      <div class="metric-card-premium">
+        <span class="metric-label-small">Class Code</span>
+        <strong class="dashboard-accent-highlight">{{ session["class_code"] }}</strong>
       </div>
-      <div class="dashboard-stat-card">
-        <span class="dashboard-stat-label">Today's Study</span>
-        <strong class="dashboard-stat-value">{{ today_minutes }} min</strong>
+      <div class="metric-card-premium">
+        <span class="metric-label-small">Today's Study</span>
+        <strong class="metric-value-large">{{ today_minutes }} min</strong>
       </div>
-      <div class="dashboard-stat-card">
-        <span class="dashboard-stat-label">Current Status</span>
-        <strong id="studyStatus" class="dashboard-stat-value dashboard-stat-status">Checking status...</strong>
+      <div class="metric-card-premium">
+        <span class="metric-label-small">Current Status</span>
+        <strong id="studyStatus" class="metric-value-large">Checking status...</strong>
       </div>
     </div>
   </section>
@@ -39,7 +39,7 @@ content %}
       <div class="dashboard-section-head">
         <div>
           <p class="dashboard-section-kicker">Smart Insight</p>
-          <h4 class="dashboard-section-title">Your study snapshot</h4>
+          <h2 class="dashboard-title-small">Your study snapshot</h2>
         </div>
       </div>
       <p class="dashboard-insight-text">{{ insight }}</p>
@@ -52,7 +52,7 @@ content %}
         <div class="dashboard-section-head">
           <div>
             <p class="dashboard-section-kicker">Quick Access</p>
-            <h4 class="dashboard-section-title">Actions</h4>
+            <h2 class="dashboard-title-small">Actions</h2>
           </div>
         </div>
 
@@ -89,32 +89,25 @@ content %}
         <div class="dashboard-section-head">
           <div>
             <p class="dashboard-section-kicker">Resources</p>
-            <h4 class="dashboard-section-title">Study Materials</h4>
+            <h2 class="dashboard-title-small">Study Materials</h2>
           </div>
         </div>
 
         <div class="mt-3">
           {% for m in materials %}
-          <div class="list-group-item container-row material-row mb-2">
-            <span class="material-name">{{ m.title }}</span>
-
-            <div class="material-actions">
-              <a
-                href="/view_material/{{ m.id }}"
-                target="_blank"
-                class="btn btn-sm btn-primary"
-              >
-                Preview
-              </a>
-
-              <a
-                href="/download_material/{{ m.id }}"
-                class="btn btn-sm btn-success"
-              >
-                Download
-              </a>
+          <article class="dashboard-material-card mb-3">
+            <div class="dashboard-material-header">
+              <div class="dashboard-material-copy">
+                <strong class="dashboard-material-title">{{ m.title }}</strong>
+                <p class="dashboard-material-meta">{{ m.filename }}</p>
+              </div>
+              <span class="dashboard-material-badge">Resource</span>
             </div>
-          </div>
+            <div class="dashboard-material-actions">
+              <a href="/view_material/{{ m.id }}" target="_blank" class="btn btn-premium-secondary">Preview</a>
+              <a href="/download_material/{{ m.id }}" class="btn btn-premium-primary">Download</a>
+            </div>
+          </article>
           {% else %}
           <div class="dashboard-empty-state">
             No study materials have been uploaded yet.
@@ -133,7 +126,7 @@ content %}
         <div class="dashboard-section-head">
           <div>
             <p class="dashboard-section-kicker">Competition</p>
-            <h4 class="dashboard-section-title">Weekly Leaderboard</h4>
+            <h2 class="dashboard-title-small">Weekly Leaderboard</h2>
           </div>
         </div>
 
@@ -167,7 +160,7 @@ content %}
         <div class="study-calendar-header">
           <div>
             <p class="dashboard-section-kicker">Consistency</p>
-            <h4 class="dashboard-section-title">Study Heatmap</h4>
+            <h2 class="dashboard-title-small">Study Heatmap</h2>
             <p class="study-calendar-subtitle">
               {{ month_heatmap.month_label }} · {{ month_heatmap.studied_days }} active days · {{ month_heatmap.total_minutes }} min total
             </p>
