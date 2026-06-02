@@ -537,6 +537,31 @@ button:focus-visible,
     gap: 16px;
 }
 
+.auth-inline-error {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 107, 129, 0.32);
+    background: rgba(255, 107, 129, 0.12);
+    color: #ffd1d8;
+    font-size: 0.96rem;
+    line-height: 1.45;
+}
+
+.dashboard-inline-message {
+    margin-bottom: 18px;
+}
+
+.dashboard-inline-success {
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(55, 208, 140, 0.32);
+    background: rgba(55, 208, 140, 0.12);
+    color: #d2ffe9;
+    font-size: 0.96rem;
+    line-height: 1.45;
+}
+
 .teacher-auth-form .btn,
 .teacher-register-form .btn {
     margin-top: 4px;

@@ -49,10 +49,20 @@
           Create your student account and join your class.
         </p>
 
+        {% if error %}
+        <div class="auth-inline-error" role="alert">{{ error }}</div>
+        {% endif %}
+
         <form method="POST" class="teacher-auth-form">
           <label class="teacher-field">
             <span>Username</span>
-            <input class="form-control" name="username" placeholder="Choose a username" required />
+            <input
+              class="form-control"
+              name="username"
+              placeholder="Choose a username"
+              value="{{ form_data.get('username', '') }}"
+              required
+            />
           </label>
 
           <label class="teacher-field">
@@ -68,7 +78,13 @@
 
           <label class="teacher-field">
             <span>Class Code</span>
-            <input class="form-control" name="class_code" placeholder="Enter your class code" required />
+            <input
+              class="form-control"
+              name="class_code"
+              placeholder="Enter your class code"
+              value="{{ form_data.get('class_code', '') }}"
+              required
+            />
           </label>
 
           <button class="btn btn-primary w-100" type="submit">Create Student Account</button>

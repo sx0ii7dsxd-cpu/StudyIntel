@@ -83,6 +83,7 @@ conn.execute(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
         filename TEXT,
+        teacher_id INTEGER,
         class_code TEXT,
         uploaded_at DATETIME
     )
@@ -94,6 +95,12 @@ try:
     print("Column added successfully")
 except:
     print("Column already exists, skipping...")
+
+try:
+    conn.execute("ALTER TABLE materials ADD COLUMN teacher_id INTEGER")
+    print("teacher_id column added successfully")
+except:
+    print("teacher_id column already exists, skipping...")
 
 conn.commit()
 conn.close()

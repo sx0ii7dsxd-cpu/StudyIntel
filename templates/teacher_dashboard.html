@@ -258,6 +258,14 @@
                 </p>
               </div>
 
+              {% if upload_error %}
+              <div class="auth-inline-error dashboard-inline-message" role="alert">{{ upload_error }}</div>
+              {% endif %}
+
+              {% if upload_success %}
+              <div class="dashboard-inline-success dashboard-inline-message" role="status">{{ upload_success }}</div>
+              {% endif %}
+
               <form
                 action="/upload_material"
                 method="POST"
@@ -280,13 +288,14 @@
                     id="teacher-material-file"
                     type="file"
                     name="file"
+                    accept=".pdf,.docx,.pptx,.txt"
                     required
                   />
                   <span class="dashboard-file-shell">
                     <span class="dashboard-file-pill">Select File</span>
                     <span class="dashboard-file-copy">
                       <strong id="teacher-file-name">No file selected yet</strong>
-                      <small>PDF, worksheet, slide deck, image, or study note.</small>
+                      <small>Allowed: PDF, DOCX, PPTX, TXT only.</small>
                     </span>
                   </span>
                 </label>

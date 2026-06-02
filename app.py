@@ -3,6 +3,7 @@ import os
 import random
 import sqlite3
 import string
+import uuid
 from datetime import date, datetime, timedelta
 
 # Register custom adapters to avoid DeprecationWarnings in Python 3.12+
@@ -11,13 +12,13 @@ sqlite3.register_adapter(datetime, lambda val: val.isoformat(" "))
 
 from flask import Flask, Response, jsonify, redirect, render_template, request, session
 import google.generativeai as genai
+from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = "secret"
-
-TEACHER_SECRET = "World*2026"
 
 UPLOAD_FOLDER = "uploads"
+ALLOWED_MATERIAL_EXTENSIONS = {"pdf", "docx", "pptx", "txt"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
@@ -57,16 +58,32 @@ def mask_secret(value):
 def log_startup_configuration():
     gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
     gemini_model = os.environ.get("GEMINI_MODEL", "").strip() or "gemini-2.5-flash"
+    flask_debug = os.environ.get("FLASK_DEBUG", "").strip() or "0"
+    secret_key = os.environ.get("SECRET_KEY", "").strip()
+    teacher_secret = os.environ.get("TEACHER_SECRET", "").strip()
 
     app.logger.info(
-        "Startup config loaded | GEMINI_MODEL=%s | GEMINI_API_KEY=%s",
+        (
+            "Startup config loaded | GEMINI_MODEL=%s | GEMINI_API_KEY=%s "
+            "| FLASK_DEBUG=%s | SECRET_KEY=%s | TEACHER_SECRET=%s"
+        ),
         gemini_model,
         mask_secret(gemini_key),
+        flask_debug,
+        mask_secret(secret_key),
+        mask_secret(teacher_secret),
     )
 
 
 load_env_file()
-log_startup_configuration()
+app.secret_key = os.environ.get("SECRET_KEY", "").strip()
+TEACHER_SECRET = os.environ.get("TEACHER_SECRET", "").strip()
+
+if not app.secret_key:
+    raise RuntimeError("SECRET_KEY is not configured. Add it to your environment or .env file.")
+
+if not TEACHER_SECRET:
+    raise RuntimeError("TEACHER_SECRET is not configured. Add it to your environment or .env file.")
 
 def get_db():
     conn = sqlite3.connect("users.db")
@@ -76,6 +93,81 @@ def get_db():
 
 def generate_class_code():
     return "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
+
+def is_hashed_password(saved_password):
+    return saved_password.startswith(("pbkdf2:", "scrypt:"))
+
+
+def login_password_matches(conn, user, entered_password):
+    saved_password = user["password"] or ""
+
+    if is_hashed_password(saved_password):
+        return check_password_hash(saved_password, entered_password)
+
+    if saved_password != entered_password:
+        return False
+
+    conn.execute(
+        "UPDATE users SET password=? WHERE id=?",
+        (generate_password_hash(entered_password), user["id"]),
+    )
+    conn.commit()
+    return True
+
+
+def username_taken(conn, username):
+    existing_user = conn.execute(
+        "SELECT id FROM users WHERE username=?",
+        (username,),
+    ).fetchone()
+    return existing_user is not None
+
+
+def allowed_material_file(filename):
+    if "." not in filename:
+        return False
+    extension = filename.rsplit(".", 1)[1].lower()
+    return extension in ALLOWED_MATERIAL_EXTENSIONS
+
+
+def build_upload_filename(filename):
+    safe_name = secure_filename(filename)
+    if not safe_name or not allowed_material_file(safe_name):
+        return None
+
+    base_name, extension = safe_name.rsplit(".", 1)
+    unique_suffix = uuid.uuid4().hex[:10]
+    return f"{base_name}_{unique_suffix}.{extension.lower()}"
+
+
+def ensure_materials_teacher_id_column():
+    conn = get_db()
+    columns = conn.execute("PRAGMA table_info(materials)").fetchall()
+    column_names = {column["name"] for column in columns}
+
+    if "teacher_id" not in column_names:
+        conn.execute("ALTER TABLE materials ADD COLUMN teacher_id INTEGER")
+        conn.commit()
+
+
+def material_belongs_to_current_class(material):
+    return material and material["class_code"] == session.get("class_code")
+
+
+def material_belongs_to_current_teacher(material):
+    if not material:
+        return False
+
+    teacher_id = material["teacher_id"]
+    if teacher_id is None:
+        return material_belongs_to_current_class(material)
+
+    return teacher_id == session.get("user_id")
+
+
+ensure_materials_teacher_id_column()
+log_startup_configuration()
 
 
 def get_study_level(minutes):
@@ -396,11 +488,11 @@ def login():
         conn = get_db()
 
         user = conn.execute(
-            "SELECT * FROM users WHERE username=? AND password=? AND role='student'",
-            (username, password),
+            "SELECT * FROM users WHERE username=? AND role='student'",
+            (username,),
         ).fetchone()
 
-        if user:
+        if user and login_password_matches(conn, user, password):
             session["user_id"] = user["id"]
             session["class_code"] = user["class_code"]
             session["role"] = "student"
@@ -425,6 +517,10 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         class_code = request.form["class_code"]
+        form_data = {
+            "username": username,
+            "class_code": class_code,
+        }
 
         conn = get_db()
 
@@ -434,18 +530,21 @@ def register():
         ).fetchone()
 
         if not teacher:
-            return "Invalid Class Code"
+            return render_template("register.html", error="Invalid Class Code", form_data=form_data)
+
+        if username_taken(conn, username):
+            return render_template("register.html", error="Username already exists", form_data=form_data)
 
         conn.execute(
             "INSERT INTO users(username,password,role,class_code) VALUES(?,?,?,?)",
-            (username, password, "student", class_code),
+            (username, generate_password_hash(password), "student", class_code),
         )
 
         conn.commit()
 
         return redirect("/login")
 
-    return render_template("register.html")
+    return render_template("register.html", error=None, form_data={})
 
 
 
@@ -459,7 +558,18 @@ def register():
 def teacher_register():
     if request.method == "POST":
         if request.form["secret_code"] != TEACHER_SECRET:
-            return "Invalid Secret Code"
+            return render_template(
+                "teacher_register.html",
+                error="Invalid Secret Code",
+                form_data={
+                    "username": request.form["username"],
+                    "full_name": request.form["full_name"],
+                    "email": request.form["email"],
+                    "phone": request.form["phone"],
+                    "address": request.form["address"],
+                    "aadhaar": request.form["aadhaar"],
+                },
+            )
 
         username = request.form["username"]
         password = request.form["password"]
@@ -469,14 +579,29 @@ def teacher_register():
         phone = request.form["phone"]
         address = request.form["address"]
         aadhaar = request.form["aadhaar"]
+        form_data = {
+            "username": username,
+            "full_name": full_name,
+            "email": email,
+            "phone": phone,
+            "address": address,
+            "aadhaar": aadhaar,
+        }
 
         class_code = generate_class_code()
 
         conn = get_db()
 
+        if username_taken(conn, username):
+            return render_template(
+                "teacher_register.html",
+                error="Username already exists",
+                form_data=form_data,
+            )
+
         cursor = conn.execute(
             "INSERT INTO users(username,password,role,class_code) VALUES(?,?,?,?)",
-            (username, password, "teacher", class_code),
+            (username, generate_password_hash(password), "teacher", class_code),
         )
 
         user_id = cursor.lastrowid
@@ -494,7 +619,7 @@ def teacher_register():
 
         return redirect("/teacher_dashboard")
 
-    return render_template("teacher_register.html")
+    return render_template("teacher_register.html", error=None, form_data={})
 
 
 
@@ -661,6 +786,8 @@ def teacher_dashboard():
 
     total_minutes = sum((entry["total"] or 0) for entry in leaderboard)
     top_student = leaderboard[0] if leaderboard else None
+    upload_error = request.args.get("upload_error")
+    upload_success = request.args.get("upload_success")
     
     return render_template(
         "teacher_dashboard.html",
@@ -671,6 +798,8 @@ def teacher_dashboard():
         total_materials=len(materials),
         total_minutes=total_minutes,
         top_student=top_student,
+        upload_error=upload_error,
+        upload_success=upload_success,
     )
 
 #---------- MATERIAL UPLOAD ---------
@@ -681,23 +810,40 @@ def upload_material():
     if "role" not in session or session["role"] != "teacher":
         return "Unauthorized"
 
-    file = request.files["file"]
-    title = request.form["title"]
+    file = request.files.get("file")
+    title = request.form.get("title", "").strip()
+
+    if not title:
+        return redirect("/teacher_dashboard?upload_error=Material+title+is+required")
+
+    if not file:
+        return redirect("/teacher_dashboard?upload_error=Please+choose+a+file+to+upload")
 
     if file.filename == "":
-        return redirect("/teacher_dashboard")
+        return redirect("/teacher_dashboard?upload_error=Please+choose+a+file+to+upload")
 
-    filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
+    if not allowed_material_file(file.filename):
+        return redirect(
+            "/teacher_dashboard?upload_error=Only+PDF%2C+DOCX%2C+PPTX%2C+and+TXT+files+are+allowed"
+        )
+
+    saved_filename = build_upload_filename(file.filename)
+    if not saved_filename:
+        return redirect("/teacher_dashboard?upload_error=Invalid+file+name+or+file+type")
+
+    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], saved_filename)
     file.save(filepath)
 
     conn = get_db()
     conn.execute(
-        "INSERT INTO materials(title, filename, class_code, uploaded_at) VALUES(?,?,?,?)",
-        (title, file.filename, session["class_code"], datetime.now())
+        "INSERT INTO materials(title, filename, teacher_id, class_code, uploaded_at) VALUES(?,?,?,?,?)",
+        (title, saved_filename, session["user_id"], session["class_code"], datetime.now())
     )
     conn.commit()
 
-    return redirect("/teacher_dashboard")
+    return redirect("/teacher_dashboard?upload_success=Material+uploaded+successfully")
 
 
 
@@ -758,6 +904,9 @@ def delete_material(material_id):
 
     if not material:
         return redirect("/teacher_dashboard")
+
+    if not material_belongs_to_current_teacher(material):
+        return "Unauthorized"
 
     # delete file from folder
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], material["filename"])
@@ -846,6 +995,17 @@ def edit_material(material_id):
     new_title = request.form["title"]
 
     conn = get_db()
+
+    material = conn.execute(
+        "SELECT * FROM materials WHERE id=?",
+        (material_id,)
+    ).fetchone()
+
+    if not material:
+        return redirect("/teacher_dashboard")
+
+    if not material_belongs_to_current_teacher(material):
+        return "Unauthorized"
 
     conn.execute(
         "UPDATE materials SET title=? WHERE id=?",
@@ -1414,11 +1574,11 @@ def teacher_login():
         conn = get_db()
 
         teacher = conn.execute(
-            "SELECT * FROM users WHERE username=? AND password=? AND role='teacher'",
-            (username, password),
+            "SELECT * FROM users WHERE username=? AND role='teacher'",
+            (username,),
         ).fetchone()
 
-        if teacher:
+        if teacher and login_password_matches(conn, teacher, password):
             session["user_id"] = teacher["id"]
             session["class_code"] = teacher["class_code"]
             session["role"] = "teacher"
@@ -1472,4 +1632,7 @@ def logout():
 # ---------------- RUN ----------------
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(
+        debug=os.environ.get("FLASK_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"},
+        port=5001,
+    )

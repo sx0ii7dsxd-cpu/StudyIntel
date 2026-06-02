@@ -1,2 +1,6 @@
 .env
 __pycache__/
+users.db
+uploads/
+venv/
+.DS_Store

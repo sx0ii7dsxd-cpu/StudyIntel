@@ -46,10 +46,20 @@
           Build your teaching workspace and generate a class code.
         </p>
 
+        {% if error %}
+        <div class="auth-inline-error" role="alert">{{ error }}</div>
+        {% endif %}
+
         <form method="POST" class="teacher-register-form">
           <label class="teacher-field">
             <span>Username</span>
-            <input class="form-control" name="username" placeholder="Choose a username" required />
+            <input
+              class="form-control"
+              name="username"
+              placeholder="Choose a username"
+              value="{{ form_data.get('username', '') }}"
+              required
+            />
           </label>
 
           <label class="teacher-field">
@@ -66,28 +76,58 @@
           <div class="teacher-form-grid">
             <label class="teacher-field">
               <span>Full Name</span>
-              <input class="form-control" name="full_name" placeholder="Enter full name" required />
+              <input
+                class="form-control"
+                name="full_name"
+                placeholder="Enter full name"
+                value="{{ form_data.get('full_name', '') }}"
+                required
+              />
             </label>
 
             <label class="teacher-field">
               <span>Email</span>
-              <input class="form-control" name="email" placeholder="Enter email" required />
+              <input
+                class="form-control"
+                name="email"
+                placeholder="Enter email"
+                value="{{ form_data.get('email', '') }}"
+                required
+              />
             </label>
 
             <label class="teacher-field">
               <span>Phone</span>
-              <input class="form-control" name="phone" placeholder="Enter phone number" required />
+              <input
+                class="form-control"
+                name="phone"
+                placeholder="Enter phone number"
+                value="{{ form_data.get('phone', '') }}"
+                required
+              />
             </label>
 
             <label class="teacher-field">
               <span>Aadhaar</span>
-              <input class="form-control" name="aadhaar" placeholder="Enter Aadhaar number" required />
+              <input
+                class="form-control"
+                name="aadhaar"
+                placeholder="Enter Aadhaar number"
+                value="{{ form_data.get('aadhaar', '') }}"
+                required
+              />
             </label>
           </div>
 
           <label class="teacher-field">
             <span>Address</span>
-            <input class="form-control" name="address" placeholder="Enter address" required />
+            <input
+              class="form-control"
+              name="address"
+              placeholder="Enter address"
+              value="{{ form_data.get('address', '') }}"
+              required
+            />
           </label>
 
           <label class="teacher-field">
