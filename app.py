@@ -55,10 +55,14 @@ def mask_secret(value):
     return f"{value[:4]}...{value[-4:]}"
 
 
+def is_debug_enabled():
+    return os.environ.get("FLASK_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def log_startup_configuration():
     gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
     gemini_model = os.environ.get("GEMINI_MODEL", "").strip() or "gemini-2.5-flash"
-    flask_debug = os.environ.get("FLASK_DEBUG", "").strip() or "0"
+    flask_debug = "1" if is_debug_enabled() else "0"
     secret_key = os.environ.get("SECRET_KEY", "").strip()
     teacher_secret = os.environ.get("TEACHER_SECRET", "").strip()
 
@@ -940,7 +944,7 @@ def student_materials():
         (session["class_code"],)
     ).fetchall()
 
-    return render_template("student_materials.html", materials=materials)
+    return render_template("student_material.html", materials=materials)
 
 
 
@@ -1633,6 +1637,6 @@ def logout():
 
 if __name__ == "__main__":
     app.run(
-        debug=os.environ.get("FLASK_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"},
+        debug=is_debug_enabled(),
         port=5001,
     )
