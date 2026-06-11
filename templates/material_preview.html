@@ -1,134 +1,443 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ material.title }} Preview</title>
+    
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Link core project styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    
     <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
       :root {
         color-scheme: dark;
       }
-
-      body {
+      
+      html, body {
+        height: 100%;
         margin: 0;
-        min-height: 100vh;
-        background: #0a0d16;
-        color: #fff;
-        font-family: "Segoe UI", "SF Pro Display", sans-serif;
+        overflow: hidden;
+      }
+      
+      /* Reset / override body background to fit seamlessly in the modal dialog */
+      body {
+        background: radial-gradient(circle at center, rgba(16, 24, 48, 0.4) 0%, rgba(6, 9, 20, 1) 100%) !important;
+        color: var(--si-text, #ffffff);
+        font-family: 'Plus Jakarta Sans', 'Outfit', "Segoe UI", sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+      }
+      
+      /* Hide the large global background blobs from parent style.css to prevent nesting and performance issues */
+      body::before, body::after {
+        display: none !important;
       }
 
       .preview-shell {
-        min-height: 100vh;
+        width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
+        box-sizing: border-box;
+      }
+      
+      .preview-shell.has-preview {
+        justify-content: flex-start;
+      }
+      
+      .preview-shell.no-preview {
+        justify-content: center;
+        align-items: center;
+        padding: 32px 24px;
       }
 
+      /* Bar for supported files */
       .preview-bar {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        padding: 16px 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(12, 16, 28, 0.92);
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--si-border, rgba(255, 255, 255, 0.08));
+        background: rgba(10, 14, 24, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 10;
       }
 
       .preview-title {
         min-width: 0;
       }
 
-      .preview-title strong,
-      .preview-title span {
+      .preview-title strong {
         display: block;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #ffffff;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
       .preview-title span {
+        display: block;
         margin-top: 4px;
-        color: rgba(255, 255, 255, 0.58);
-        font-size: 0.92rem;
+        color: var(--si-text-muted, rgba(255, 255, 255, 0.6));
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .preview-actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
         flex-shrink: 0;
       }
 
-      .preview-btn {
+      /* Compact download button in preview bar */
+      .preview-bar-btn {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        min-height: 42px;
-        padding: 0 16px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        background: rgba(255, 255, 255, 0.06);
-        color: #fff;
+        gap: 8px;
+        padding: 10px 20px !important;
+        border-radius: 999px !important;
+        background: var(--si-accent) !important;
+        color: #030407 !important;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
         text-decoration: none;
-        font-weight: 700;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+        border: none !important;
+      }
+      
+      .preview-bar-btn:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: var(--si-shadow-glow) !important;
       }
 
       .preview-frame {
         flex: 1;
         width: 100%;
         border: 0;
-        background: #fff;
+        background: #ffffff;
       }
 
-      .preview-empty {
-        display: grid;
-        place-items: center;
-        flex: 1;
-        padding: 32px;
+      /* Fallback state styles */
+      .preview-fallback-container {
+        position: relative;
+        width: min(440px, 100%);
+        transform: translateY(-24px); /* visually balance against the modal's top header */
+        animation: cardEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        z-index: 2;
       }
 
-      .preview-empty-card {
-        width: min(520px, 100%);
-        padding: 28px;
+      /* Floating glow blob behind the card */
+      .fallback-glow {
+        position: absolute;
+        width: 240px;
+        height: 240px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: var(--si-accent-solid, #1e9dbf);
+        filter: blur(80px);
+        opacity: 0.12;
+        pointer-events: none;
+        z-index: 1;
+        animation: pulseGlow 8s ease-in-out infinite alternate;
+      }
+
+      @keyframes pulseGlow {
+        0% { opacity: 0.1; filter: blur(70px); transform: translate(-50%, -50%) scale(0.9); }
+        100% { opacity: 0.18; filter: blur(90px); transform: translate(-50%, -50%) scale(1.1); }
+      }
+
+      .preview-fallback-card {
+        position: relative;
+        background: rgba(18, 24, 43, 0.45) !important;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--si-border, rgba(255, 255, 255, 0.08));
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(255, 255, 255, 0.04);
+        padding: 32px 24px;
+        text-align: center;
+        box-shadow: var(--si-shadow, 0 30px 60px rgba(0, 0, 0, 0.5));
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
-      .preview-empty-card p {
-        color: rgba(255, 255, 255, 0.72);
-        line-height: 1.6;
+      @keyframes cardEnter {
+        0% { opacity: 0; transform: translateY(-4px) scale(0.98); }
+        100% { opacity: 1; transform: translateY(-24px) scale(1); }
+      }
+
+      /* Dynamic File Icon Design */
+      .file-icon-wrapper {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .icon-background-glow {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        filter: blur(18px);
+        opacity: 0.25;
+        z-index: 1;
+      }
+
+      /* Formats color mapping */
+      .file-type-doc .icon-background-glow, 
+      .file-type-docx .icon-background-glow {
+        background: #2b579a;
+      }
+      .file-type-ppt .icon-background-glow, 
+      .file-type-pptx .icon-background-glow {
+        background: #d24726;
+      }
+      .file-type-xls .icon-background-glow, 
+      .file-type-xlsx .icon-background-glow {
+        background: #217346;
+      }
+      .file-type-zip .icon-background-glow, 
+      .file-type-rar .icon-background-glow,
+      .file-type-tar .icon-background-glow,
+      .file-type-gz .icon-background-glow {
+        background: #ffaa00;
+      }
+      .file-type-other .icon-background-glow {
+        background: var(--si-accent-solid, #1e9dbf);
+      }
+
+      .svg-file-icon {
+        position: relative;
+        width: 72px;
+        height: 72px;
+        z-index: 2;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      
+      .preview-fallback-card:hover .svg-file-icon {
+        transform: scale(1.08) translateY(-3px);
+      }
+
+      /* Typography improvements */
+      .preview-fallback-card h2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.45rem;
+        font-weight: 800;
+        margin: 0 0 8px;
+        color: #ffffff;
+        letter-spacing: -0.02em;
+      }
+
+      .file-meta-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 99px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--si-text-muted, #8E9FB8);
+        margin-bottom: 16px;
+        max-width: 90%;
+      }
+      
+      .file-meta-pill span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .preview-fallback-card p {
+        font-size: 0.92rem;
+        line-height: 1.55;
+        color: var(--si-text-muted, rgba(255, 255, 255, 0.7));
+        margin: 0 0 24px;
+        padding: 0 10px;
+      }
+
+      .fallback-download-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 48px;
+        padding: 0 24px !important;
+        border-radius: 12px !important;
+        background: var(--si-accent) !important;
+        color: #030407 !important;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        text-decoration: none;
+        box-shadow: var(--si-shadow-glow, 0 8px 30px rgba(30, 157, 191, 0.3)) !important;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+        border: none !important;
+      }
+
+      .fallback-download-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px var(--si-accent-solid, rgba(30, 157, 191, 0.5)) !important;
+      }
+      
+      .fallback-download-btn:active {
+        transform: translateY(-1px);
+      }
+      
+      .download-icon {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        stroke-width: 2.5;
+        fill: none;
+        transition: transform 0.3s ease;
+      }
+      
+      .fallback-download-btn:hover .download-icon {
+        transform: translateY(2px);
       }
     </style>
   </head>
   <body>
-    <div class="preview-shell">
+    <div class="preview-shell {% if preview_supported %}has-preview{% else %}no-preview{% endif %}">
+      {% if preview_supported %}
       <div class="preview-bar">
         <div class="preview-title">
           <strong>{{ material.title }}</strong>
           <span>{{ material.filename }}</span>
         </div>
         <div class="preview-actions">
-          <a href="{{ download_url }}" class="preview-btn">Download</a>
+          <a href="{{ download_url }}" class="preview-bar-btn">
+            <svg class="download-icon" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download
+          </a>
         </div>
       </div>
 
-      {% if preview_supported %}
       <iframe
         class="preview-frame"
         src="{{ preview_url }}"
         title="{{ material.title }} preview"
       ></iframe>
       {% else %}
-      <div class="preview-empty">
-        <div class="preview-empty-card">
+      
+      <div class="preview-fallback-container">
+        <div class="fallback-glow"></div>
+        <div class="preview-fallback-card">
+          <div class="file-icon-wrapper file-type-{{ extension }}">
+            <div class="icon-background-glow"></div>
+            
+            {% if extension in ['doc', 'docx'] %}
+            <!-- Word SVG -->
+            <svg class="svg-file-icon" viewBox="0 0 24 24" fill="none" stroke="#2b579a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" fill="rgba(43, 87, 154, 0.15)" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M8 12l2 5 2-5 2 5 2-5" stroke-width="1.8" />
+            </svg>
+            {% elif extension in ['ppt', 'pptx'] %}
+            <!-- PowerPoint SVG -->
+            <svg class="svg-file-icon" viewBox="0 0 24 24" fill="none" stroke="#d24726" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" fill="rgba(210, 71, 38, 0.15)" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M9 12h3a2 2 0 0 0 0-4H9v8" stroke-width="1.8" />
+            </svg>
+            {% elif extension in ['xls', 'xlsx'] %}
+            <!-- Excel SVG -->
+            <svg class="svg-file-icon" viewBox="0 0 24 24" fill="none" stroke="#217346" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" fill="rgba(33, 115, 70, 0.15)" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M9 12l6 4m0-4l-6 4" stroke-width="1.8" />
+            </svg>
+            {% elif extension in ['zip', 'rar', 'tar', 'gz'] %}
+            <!-- ZIP SVG -->
+            <svg class="svg-file-icon" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" fill="rgba(255, 170, 0, 0.12)" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M12 11v6" stroke-dasharray="2 1.5" stroke-width="2" />
+              <rect x="11" y="16" width="2" height="3" rx="0.5" fill="#ffaa00" stroke="none" />
+            </svg>
+            {% else %}
+            <!-- Generic File SVG -->
+            <svg class="svg-file-icon" viewBox="0 0 24 24" fill="none" stroke="var(--si-accent-solid, #1e9dbf)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" fill="rgba(30, 157, 191, 0.12)" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M12 11v5m-3-3l3 3 3-3" stroke-width="1.8" />
+            </svg>
+            {% endif %}
+          </div>
+
           <h2>Preview not available</h2>
+          
+          <div class="file-meta-pill">
+            <span>{{ material.filename }}</span>
+          </div>
+
           <p>
-            This file type ({{ extension|upper }}) can’t be shown inline here yet.
-            Use the download button to open it on your device.
+            This file format ({{ extension|upper }}) can’t be displayed inline here. 
+            Download the file to view it on your device.
           </p>
-          <a href="{{ download_url }}" class="preview-btn">Download File</a>
+
+          <a href="{{ download_url }}" class="fallback-download-btn">
+            <svg class="download-icon" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download File
+          </a>
         </div>
       </div>
+      
       {% endif %}
     </div>
+
+    <script>
+      // Apply and synchronize theme with the main dashboard
+      try {
+        const savedTheme = localStorage.getItem('studyintelTheme') || 'ocean';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        window.addEventListener('storage', (e) => {
+          if (e.key === 'studyintelTheme') {
+            document.documentElement.setAttribute('data-theme', e.newValue);
+          }
+        });
+      } catch (err) {
+        console.error('Failed to sync theme:', err);
+      }
+    </script>
   </body>
 </html>

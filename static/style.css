@@ -379,20 +379,34 @@ body a:hover {
     font-size: 1.05rem;
     color: #fff;
 }
-
 .material-preview-close {
     position: absolute;
     top: 14px;
     right: 14px;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.06);
-    color: #fff;
-    font-size: 1.5rem;
-    line-height: 1;
-    cursor: pointer;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: #fff !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+.material-preview-close:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    transform: scale(1.05) !important;
+    color: #fff !important;
+}
+
+.material-preview-close:active {
+    transform: scale(0.95) !important;
 }
 
 .material-preview-frame {
