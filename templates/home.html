@@ -104,7 +104,14 @@ content %}
               <span class="dashboard-material-badge">Resource</span>
             </div>
             <div class="dashboard-material-actions">
-              <a href="/view_material/{{ m.id }}" target="_blank" class="btn btn-premium-secondary">Preview</a>
+              <a
+                href="/view_material/{{ m.id }}"
+                class="btn btn-premium-secondary"
+                data-material-preview
+                data-preview-title="{{ m.title }}"
+              >
+                Preview
+              </a>
               <a href="/download_material/{{ m.id }}" class="btn btn-premium-primary">Download</a>
             </div>
           </article>
@@ -238,7 +245,65 @@ content %}
 
 <div class="studyai-popup">
   <div class="studyai-popup-text">Struggling? Lemme help you 🙂</div>
-  <a href="/studyai?view=tools" class="btn btn-info btn-sm studyai-popup-btn">Try StudyAI</a>
+  <a
+    href="/studyai?view=tools"
+    class="btn btn-info btn-sm studyai-popup-btn"
+  >
+    Try StudyAI
+  </a>
 </div>
+
+<div id="materialPreviewModal" class="material-preview-modal" hidden>
+  <div class="material-preview-backdrop" data-preview-close></div>
+  <div class="material-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="materialPreviewTitle">
+    <button type="button" class="material-preview-close" aria-label="Close preview" data-preview-close>
+      ×
+    </button>
+    <div class="material-preview-header">
+      <h3 id="materialPreviewTitle">Preview</h3>
+    </div>
+    <iframe id="materialPreviewFrame" class="material-preview-frame" title="Material preview"></iframe>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const modal = document.getElementById("materialPreviewModal");
+    const frame = document.getElementById("materialPreviewFrame");
+    const title = document.getElementById("materialPreviewTitle");
+
+    if (!modal || !frame || !title) return;
+
+    const openPreview = (url, label) => {
+      frame.src = url;
+      title.textContent = label || "Preview";
+      modal.hidden = false;
+      document.body.style.overflow = "hidden";
+    };
+
+    const closePreview = () => {
+      modal.hidden = true;
+      frame.src = "";
+      document.body.style.overflow = "";
+    };
+
+    document.querySelectorAll("[data-material-preview]").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        openPreview(link.href, link.dataset.previewTitle);
+      });
+    });
+
+    modal.querySelectorAll("[data-preview-close]").forEach((element) => {
+      element.addEventListener("click", closePreview);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !modal.hidden) {
+        closePreview();
+      }
+    });
+  })();
+</script>
 
 {% endblock %}

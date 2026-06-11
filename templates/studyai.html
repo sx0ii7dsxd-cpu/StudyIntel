@@ -5,8 +5,16 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='studyai.css') }}" />
 {% endblock %}
 {% block navbar_title %}StudyAI{% endblock %}
+{% block navbar_leading %}
+<a
+  href="/dashboard"
+  class="studyai-back-link"
+  aria-label="Back to dashboard"
+>
+  <span aria-hidden="true">←</span>
+</a>
+{% endblock %}
 {% block navbar_actions %}
-<a href="/dashboard" class="btn btn-light btn-sm">Back</a>
 <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
 {% endblock %}
 {% block content %}

@@ -223,7 +223,14 @@
                   </div>
 
                   <div class="dashboard-material-actions">
-                    <a href="/view_material/{{ m.id }}" class="btn dashboard-action-btn">View</a>
+                    <a
+                      href="/view_material/{{ m.id }}"
+                      class="btn dashboard-action-btn"
+                      data-material-preview
+                      data-preview-title="{{ m.title }}"
+                    >
+                      View
+                    </a>
                     <a href="/delete_material/{{ m.id }}" class="btn dashboard-action-btn dashboard-delete-btn">Delete</a>
                   </div>
 
@@ -308,14 +315,62 @@
       </section>
     </main>
 
+    <div id="materialPreviewModal" class="material-preview-modal" hidden>
+      <div class="material-preview-backdrop" data-preview-close></div>
+      <div class="material-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="materialPreviewTitle">
+        <button type="button" class="material-preview-close" aria-label="Close preview" data-preview-close>
+          ×
+        </button>
+        <div class="material-preview-header">
+          <h3 id="materialPreviewTitle">Preview</h3>
+        </div>
+        <iframe id="materialPreviewFrame" class="material-preview-frame" title="Material preview"></iframe>
+      </div>
+    </div>
+
     <script>
       const materialFileInput = document.getElementById("teacher-material-file");
       const materialFileName = document.getElementById("teacher-file-name");
+      const previewModal = document.getElementById("materialPreviewModal");
+      const previewFrame = document.getElementById("materialPreviewFrame");
+      const previewTitle = document.getElementById("materialPreviewTitle");
 
       if (materialFileInput && materialFileName) {
         materialFileInput.addEventListener("change", () => {
           const selectedFile = materialFileInput.files && materialFileInput.files[0];
           materialFileName.textContent = selectedFile ? selectedFile.name : "No file selected yet";
+        });
+      }
+
+      if (previewModal && previewFrame && previewTitle) {
+        const openPreview = (url, label) => {
+          previewFrame.src = url;
+          previewTitle.textContent = label || "Preview";
+          previewModal.hidden = false;
+          document.body.style.overflow = "hidden";
+        };
+
+        const closePreview = () => {
+          previewModal.hidden = true;
+          previewFrame.src = "";
+          document.body.style.overflow = "";
+        };
+
+        document.querySelectorAll("[data-material-preview]").forEach((link) => {
+          link.addEventListener("click", (event) => {
+            event.preventDefault();
+            openPreview(link.href, link.dataset.previewTitle);
+          });
+        });
+
+        previewModal.querySelectorAll("[data-preview-close]").forEach((element) => {
+          element.addEventListener("click", closePreview);
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !previewModal.hidden) {
+            closePreview();
+          }
         });
       }
     </script>

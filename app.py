@@ -10,7 +10,7 @@ from datetime import date, datetime, timedelta
 sqlite3.register_adapter(date, lambda val: val.isoformat())
 sqlite3.register_adapter(datetime, lambda val: val.isoformat(" "))
 
-from flask import Flask, Response, jsonify, redirect, render_template, request, session
+from flask import Flask, Response, jsonify, redirect, render_template, request, session, send_file
 import google.generativeai as genai
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
@@ -882,8 +882,27 @@ def view_material(material_id):
 
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], material["filename"])
 
-    from flask import send_file
-    return send_file(filepath)
+    if not os.path.exists(filepath):
+        return "File not found"
+
+    extension = material["filename"].rsplit(".", 1)[-1].lower() if "." in material["filename"] else ""
+
+    if request.args.get("raw") == "1":
+        if extension == "txt":
+            return send_file(filepath, mimetype="text/plain", as_attachment=False)
+        if extension == "pdf":
+            return send_file(filepath, mimetype="application/pdf", as_attachment=False)
+        return "Preview not available for this file type."
+
+    preview_supported = extension in {"pdf", "txt"}
+    return render_template(
+        "material_preview.html",
+        material=material,
+        preview_supported=preview_supported,
+        preview_url=f"/view_material/{material_id}?raw=1",
+        download_url=f"/download_material/{material_id}",
+        extension=extension,
+    )
   
 
 
@@ -976,7 +995,6 @@ def download_material(material_id):
 
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], material["filename"])
 
-    from flask import send_file
     return send_file(filepath, as_attachment=True)
 
 

@@ -4,8 +4,10 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}" />
 {% endblock %}
 {% block navbar_title %}Private Chat{% endblock %}
-{% block navbar_actions %}
-<a href="/dashboard" class="btn btn-light btn-sm">Back</a>
+{% block navbar_leading %}
+<a href="/dashboard" class="nav-back-link" aria-label="Back to dashboard">
+  <span aria-hidden="true">←</span>
+</a>
 {% endblock %}
 {% block content %}
 <div class="container mt-4">

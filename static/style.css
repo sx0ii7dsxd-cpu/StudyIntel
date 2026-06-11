@@ -291,12 +291,115 @@ body a:hover {
     gap: 12px;
 }
 
+.nav-back-link,
+.studyai-back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-left: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.4rem;
+    line-height: 1;
+    text-decoration: none;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+}
+
+.nav-back-link:hover,
+.studyai-back-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.22);
+    transform: translateX(-2px);
+}
+
+.nav-back-link:focus-visible,
+.studyai-back-link:focus-visible {
+    outline: 2px solid rgba(139, 233, 253, 0.95);
+    outline-offset: 3px;
+}
+
 .study-navbar-mark {
     width: 14px;
     height: 14px;
     border-radius: 999px;
     background: var(--si-accent);
     box-shadow: 0 0 12px var(--si-accent-solid);
+}
+
+.material-preview-modal[hidden] {
+    display: none !important;
+}
+
+.material-preview-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+.material-preview-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 14, 0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.material-preview-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(960px, 100%);
+    height: min(78vh, 760px);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(10, 14, 24, 0.98);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+}
+
+.material-preview-header {
+    display: flex;
+    align-items: center;
+    min-height: 64px;
+    padding: 18px 72px 18px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.material-preview-header h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #fff;
+}
+
+.material-preview-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.material-preview-frame {
+    width: 100%;
+    height: calc(100% - 64px);
+    border: 0;
+    background: #101522;
 }
 
 .glass,
@@ -1475,6 +1578,14 @@ select:focus,
 }
 
 @media (max-width: 575px) {
+  .nav-back-link,
+  .studyai-back-link {
+    width: 40px;
+    height: 40px;
+    margin-left: 6px;
+    font-size: 1.25rem;
+  }
+
   .study-navbar {
     flex-wrap: wrap;
     justify-content: space-between;

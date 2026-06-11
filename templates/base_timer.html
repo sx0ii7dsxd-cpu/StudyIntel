@@ -55,20 +55,21 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-dark bg-dark px-4 study-navbar">
-      <span class="navbar-brand study-navbar-brand">
-        <span class="study-navbar-mark" aria-hidden="true"></span>
-        <span>{% block navbar_title %}StudyIntel{% endblock %}</span>
-      </span>
-      <div class="d-flex align-items-center gap-3">
-        <button onclick="openThemeModal()" class="btn btn-secondary btn-sm" aria-label="Toggle Theme">🎨 Theme</button>
-        {% block navbar_actions %}
-        <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
-        {% endblock %}
-      </div> 
-    </nav>
+      <nav class="navbar navbar-dark bg-dark px-4 study-navbar">
+        <span class="navbar-brand study-navbar-brand">
+          <span class="study-navbar-mark" aria-hidden="true"></span>
+          <span>{% block navbar_title %}StudyIntel{% endblock %}</span>
+          {% block navbar_leading %}{% endblock %}
+        </span>
+        <div class="d-flex align-items-center gap-3">
+          <button onclick="openThemeModal()" class="btn btn-secondary btn-sm" aria-label="Toggle Theme">🎨 Theme</button>
+          {% block navbar_actions %}
+          <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+          {% endblock %}
+        </div> 
+      </nav>
 
-    {% block content %}{% endblock %}
+      {% block content %}{% endblock %}
 
     <div id="floatingTimer" class="floating-timer">
       <p class="floating-timer-label">Study Timer</p>
