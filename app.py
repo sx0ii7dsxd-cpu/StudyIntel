@@ -1397,12 +1397,12 @@ def class_chat():
         if clean_msg.strip().startswith("@bot"):
             return "BOT_REDIRECT"
 
-        # 🚫 CHECK BAD WORDS
+        #  CHECK BAD WORDS
         for word in blocked_words:
             if word in clean_msg:
                 return "⚠️ Message blocked due to inappropriate content"
 
-        # ✅ SAVE ONLY CLEAN MESSAGE
+        # SAVE ONLY CLEAN MESSAGE
         conn.execute(
             "INSERT INTO class_messages(user_id,message,timestamp) VALUES(?,?,?)",
             (session["user_id"], message, datetime.now()),
@@ -1411,7 +1411,7 @@ def class_chat():
 
         return "ok"
 
-    # ✅ FETCH ONLY SAME CLASS MESSAGES
+    #  FETCH ONLY SAME CLASS MESSAGES
     messages = conn.execute(
         """
         SELECT class_messages.*, users.username

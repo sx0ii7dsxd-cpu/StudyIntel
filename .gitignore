@@ -4,3 +4,5 @@ users.db
 uploads/
 venv/
 .DS_Store
+graphify-out/
+PROJECT_PROG*
