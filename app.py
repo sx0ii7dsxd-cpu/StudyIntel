@@ -1423,11 +1423,11 @@ def class_chat():
         (session["class_code"],),
     ).fetchall()
 
-    # ✅ AJAX REQUEST → return ONLY messages
+    #  AJAX REQUEST → return ONLY messages
     if request.args.get("ajax"):
         return render_template("chat_messages.html", messages=messages)
 
-    # ✅ NORMAL PAGE LOAD
+    #  NORMAL PAGE LOAD
     return render_template("class_chat.html", messages=messages, warning=warning)
 
 
@@ -1479,12 +1479,12 @@ def private_chat():
         if clean_msg.strip().startswith("@bot"):
             return "BOT_REDIRECT"
 
-        # 🚫 CHECK BAD WORDS
+        #  CHECK BAD WORDS
         for word in blocked_words:
             if word in clean_msg:
                 return "⚠️ Message blocked due to inappropriate content"
 
-        # ✅ SAVE MESSAGE (ONLY IF CLEAN)
+        #  SAVE MESSAGE (ONLY IF CLEAN)
         conn.execute(
             "INSERT INTO private_messages(sender_id,receiver_id,message,timestamp) VALUES(?,?,?,?)",
             (session["user_id"], selected_user, message, datetime.now()),
